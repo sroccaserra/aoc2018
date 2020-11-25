@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0772c34f2e56672de498b6707db0a8c7f909ee553faf01596ac1dff330b589c4
+-- hash: d65cc8982aaf1911a644d82c8565e4ce136cec4b135e3fdfb4e57476be2fba92
 
 name:           aoc2018
 version:        0.1.0.0
@@ -34,6 +34,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , containers
   default-language: Haskell2010
 
 executable aoc2018-exe
@@ -46,6 +47,7 @@ executable aoc2018-exe
   build-depends:
       aoc2018
     , base >=4.7 && <5
+    , containers
   default-language: Haskell2010
 
 test-suite aoc2018-test
@@ -59,5 +61,6 @@ test-suite aoc2018-test
   build-depends:
       aoc2018
     , base >=4.7 && <5
+    , containers
     , hspec >=2.7.4 && <3
   default-language: Haskell2010
