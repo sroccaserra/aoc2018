@@ -16,10 +16,10 @@ process ls = M.size $ M.filter (> 1) claims
 parseLine :: String -> [Int]
 parseLine = map read . words
 
-createClaim [n, x, y, w, h] = Claim {n = n, x1 = x, y1 = y, x2 = x+w-1, y2 = y+h-1}
+createClaim [i, x, y, w, h] = Claim i x y (x+w-1) (y+h-1)
 
 data Claim = Claim {
-  n :: Int,
+  i :: Int,
   x1 :: Int,
   y1 :: Int,
   x2 :: Int,
@@ -42,5 +42,4 @@ addPoints c f = foldr addPoint f $ points c
 
 addPoint :: Point -> Fabric -> Fabric
 addPoint p f =
-  M.insert p v f
-  where v = maybe 1 (+ 1) $ M.lookup p f
+  M.alter (Just . maybe 1 succ) p f
