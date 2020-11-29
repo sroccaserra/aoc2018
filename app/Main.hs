@@ -42,6 +42,5 @@ addPoints c f = foldr addPoint f $ points c
 
 addPoint :: Point -> Fabric -> Fabric
 addPoint p f =
-  case M.lookup p f of
-       Just n -> M.insert p (n+1) f
-       Nothing -> M.insert p 1 f
+  M.insert p v f
+  where v = maybe 1 (+ 1) $ M.lookup p f
