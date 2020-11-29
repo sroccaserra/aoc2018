@@ -9,9 +9,5 @@ $ stack build
 ## Usage
 
 ```
-$ $ echo 1 2 3 4 | stack runhaskell -- app/Main
-```
-ou :
-```
-$ awk -f script.awk input | stack runhaskell -- app/Main
+$ awk -f src/Day03.awk src/Day03Input.txt | stack runhaskell -- src/Day03.hs
 ```
