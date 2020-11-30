@@ -1,5 +1,6 @@
 module Day03 where
 
+import Data.Function
 import qualified Data.Map as M
 
 main :: IO ()
@@ -27,7 +28,11 @@ hasNoCollision f = (== 1) . foldr max 0 . heights f
 parseLine :: String -> [Int]
 parseLine = map read . words
 
-createClaim [i, x, y, w, h] = Claim i x y (x+w-1) (y+h-1)
+createClaim :: [Int] -> Claim
+createClaim [n, x, y, w, h] = Claim n x y (x+w-1) (y+h-1)
+createClaim xs = error message
+  where message =
+          "Wrong number of arguments: " ++ (xs & length & show) ++ " " ++ (show xs)
 
 data Claim = Claim {
   i :: Int,
