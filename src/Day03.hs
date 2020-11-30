@@ -1,18 +1,20 @@
 module Day03 where
 
 import qualified Data.Map as M
-import qualified Data.Set as S
 
+main :: IO ()
 main = do
-  lines <- fmap lines getContents
-  print $ partTwo lines
+  ls <- fmap lines getContents
+  print $ partTwo ls
 
+partOne :: [String] -> Int
 partOne ls = M.size $ M.filter (> 1) fabric
   where
     fabric = foldr addPoints M.empty claims
     claims = map createClaim numbers
     numbers = map parseLine ls
 
+partTwo :: [String] -> [Claim]
 partTwo ls = filter (\ c -> 1 == (foldr max 0 $ heights fabric c)) claims
   where
     fabric = foldr addPoints M.empty claims
