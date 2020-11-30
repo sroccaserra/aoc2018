@@ -15,11 +15,14 @@ partOne ls = M.size $ M.filter (> 1) fabric
     numbers = map parseLine ls
 
 partTwo :: [String] -> [Claim]
-partTwo ls = filter (\ c -> 1 == (foldr max 0 $ heights fabric c)) claims
+partTwo ls = filter (hasNoCollision fabric) claims
   where
     fabric = foldr addPoints M.empty claims
     claims = map createClaim numbers
     numbers = map parseLine ls
+
+hasNoCollision :: Fabric -> Claim -> Bool
+hasNoCollision f = (== 1) . foldr max 0 . heights f
 
 parseLine :: String -> [Int]
 parseLine = map read . words
