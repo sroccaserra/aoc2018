@@ -1,15 +1,16 @@
 import Data.Char
 import Data.Ord
 import Data.Function
+import Data.Set (Set)
+import qualified Data.Set as Set
 import Data.List
 import Text.ParserCombinators.ReadP
 
 
-solve xs = grouped
+solve xs = sleepMinutesById
   where grouped = foldl step [] xs
-        sleepTimesById = groupBy ((==) `on` fst) $ map (\(id, xs) -> (id, sleepTimes xs)) grouped
-        sleepTimeSumById = map (foldl1 (\(id, x) (_, y)-> (id, x+y))) sleepTimesById
-        m = maximumBy (comparing snd) sleepTimeSumById
+        sleepPeriodsById = map (\(id, xs) -> (id, sleepPeriods xs)) grouped
+        sleepMinutesById = map (\(id, xs) -> (id, foldl markSleepMinutes Set.empty xs)) sleepPeriodsById
 
 step xs (Shift id) = (id, []):xs
 step ((id, evs):xs) x = (id, evs++[x]):xs
@@ -22,10 +23,12 @@ data Event = Shift Id
 type Timestamp = Int
 type Id = Int
 
-sleepTime (Asleep x) (Awake y) = y - x
+markSleepMinutes s (start, end) = foldl (\s x -> Set.insert x s) s [start..end]
 
-sleepTimes [] = 0
-sleepTimes (x:y:xs) = (sleepTime x y) + (sleepTimes xs)
+sleepPeriod (Asleep x) (Awake y) = (x, pred y)
+
+sleepPeriods [] = []
+sleepPeriods (x:y:xs) = (sleepPeriods xs) ++ [sleepPeriod x y]
 
 ---
 -- Parsing and main
