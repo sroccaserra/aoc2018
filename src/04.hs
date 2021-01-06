@@ -7,10 +7,17 @@ import Data.List
 import Text.ParserCombinators.ReadP
 
 
-solve xs = sleepMinutesById
+solve xs = guardId * minute
   where grouped = foldl step [] xs
         sleepPeriodsById = map (\(id, xs) -> (id, sleepPeriods xs)) grouped
         sleepMinutesById = map (\(id, xs) -> (id, foldl markSleepMinutes Set.empty xs)) sleepPeriodsById
+        sleepSizesById = map (\(id, xs) -> (id, Set.size xs)) sleepMinutesById
+        totalSleepMinutesById = map (foldl1 (\(id, s) (_, x) -> (id, s+x))) $ groupBy ((==) `on` fst) $ sort sleepSizesById
+        (guardId, _) = foldl1 (\(idm, xm) (id, x) -> if x > xm then (id, x) else (idm, xm)) totalSleepMinutesById
+        f xs = [length xs, head xs]
+        occurences = map f $ group $ sort $ concatMap (Set.toList . snd) $ filter (\(id, _) -> id == guardId) sleepMinutesById
+        [_,minute] = maximumBy (comparing head) occurences
+
 
 step xs (Shift id) = (id, []):xs
 step ((id, evs):xs) x = (id, evs++[x]):xs
@@ -49,4 +56,4 @@ asleep = Asleep <$> timestamp <* string "falls asleep"
 
 main = do
   input <- getContents
-  mapM_ print $ solve $ parse input
+  print $ solve $ parse input
