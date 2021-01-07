@@ -14,9 +14,9 @@ partOne xs = guardId * minute
         totalSleepMinutesById = map (foldl1 (\(id, s) (_, x) -> (id, s+x))) $ groupBy ((==) `on` fst) $ sort sleepSizesById
         (guardId, _) = foldl1 (\(idm, xm) (id, x) -> if x > xm then (id, x) else (idm, xm)) totalSleepMinutesById
         occurences = uniqC $ concatMap (Set.toList . snd) $ filter (\(id, _) -> id == guardId) sleepMinutesById
-        [_,minute] = maximumBy (comparing head) occurences
+        (_,minute) = maximumBy (comparing fst) occurences
 
-partTwo xs = map (\(id, xs) -> (id, foldl1 (\[mx, mm] [n, m]-> if n > mx then [n, m] else [mx, mm]) xs)) $ filter (\(_, xs) -> xs /= []) uniqued
+partTwo xs = map (\(id, xs) -> (id, foldl1 (\(mx, mm) (n, m)-> if n > mx then (n, m) else (mx, mm)) xs)) $ filter (\(_, xs) -> xs /= []) uniqued
   where grouped = foldl groupByShift [] xs
         sleepPeriodsById = map (\(id, xs) -> (id, sleepPeriods xs)) grouped
         sleepMinutesById = map (\(id, s) -> (id, Set.toList s)) $ map (\(id, xs) -> (id, foldl markSleepMinutes Set.empty xs)) sleepPeriodsById
@@ -45,9 +45,9 @@ sleepPeriod (Asleep x) (Awake y) = (x, pred y)
 markSleepMinutes :: Set Int -> (Int, Int) -> Set Int
 markSleepMinutes s (start, end) = foldl (\s x -> Set.insert x s) s [start..end]
 
-uniqC :: [Int] -> [[Int]]
+uniqC :: Ord a => [a] -> [(Int, a)]
 uniqC xs = map f $ group $ sort xs
-  where f xs = [length xs, head xs]
+  where f xs = (length xs, head xs)
 
 ---
 -- Parsing and main
