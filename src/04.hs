@@ -16,12 +16,14 @@ partOne xs = guardId * minute
         occurences = uniqC $ concatMap (Set.toList . snd) $ filter (\(id, _) -> id == guardId) sleepMinutesById
         (_,minute) = maximumBy (comparing fst) occurences
 
-partTwo xs = map (\(id, xs) -> (id, foldl1 (\(mx, mm) (n, m)-> if n > mx then (n, m) else (mx, mm)) xs)) $ filter (\(_, xs) -> xs /= []) uniqued
+partTwo xs = guardId * minute
   where grouped = foldl groupByShift [] xs
         sleepPeriodsById = map (\(id, xs) -> (id, sleepPeriods xs)) grouped
         sleepMinutesById = map (\(id, s) -> (id, Set.toList s)) $ map (\(id, xs) -> (id, foldl markSleepMinutes Set.empty xs)) sleepPeriodsById
         groupedMinutesById = map (foldl1 (\(id, xs) (_, ys) -> (id, concat [xs, ys]))) $ groupBy ((==) `on` fst) $ sort sleepMinutesById
         uniqued = map (\(id, xs) -> (id, uniqC xs)) groupedMinutesById
+        maxMinutesById = map (\(id, xs) -> (id, maximumBy (comparing fst) xs)) $ filter (\(_, xs) -> xs /= []) uniqued
+        (guardId, (_, minute)) = maximumBy (comparing $ fst . snd ) maxMinutesById
 
 data Event = Shift Id
            | Asleep Timestamp
@@ -69,4 +71,4 @@ asleep = Asleep <$> timestamp <* string "falls asleep"
 main = do
   input <- getContents
   print $ partOne $ parse input
-  mapM_ print $ partTwo $ parse input
+  print $ partTwo $ parse input
