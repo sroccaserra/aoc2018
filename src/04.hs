@@ -1,14 +1,13 @@
 import Data.Char
-import Data.Ord
 import Data.Function
+import Data.List
+import Data.Ord
 import Data.Set (Set)
 import qualified Data.Set as Set
-import Data.List
 import Text.ParserCombinators.ReadP
 
-
 partOne xs = guardId * minute
-  where grouped = foldl step [] xs
+  where grouped = foldl groupByShift [] xs
         sleepPeriodsById = map (\(id, xs) -> (id, sleepPeriods xs)) grouped
         sleepMinutesById = map (\(id, xs) -> (id, foldl markSleepMinutes Set.empty xs)) sleepPeriodsById
         sleepSizesById = map (\(id, xs) -> (id, Set.size xs)) sleepMinutesById
@@ -18,17 +17,11 @@ partOne xs = guardId * minute
         [_,minute] = maximumBy (comparing head) occurences
 
 partTwo xs = map (\(id, xs) -> (id, foldl1 (\[mx, mm] [n, m]-> if n > mx then [n, m] else [mx, mm]) xs)) $ filter (\(_, xs) -> xs /= []) uniqued
-  where grouped = foldl step [] xs
+  where grouped = foldl groupByShift [] xs
         sleepPeriodsById = map (\(id, xs) -> (id, sleepPeriods xs)) grouped
         sleepMinutesById = map (\(id, s) -> (id, Set.toList s)) $ map (\(id, xs) -> (id, foldl markSleepMinutes Set.empty xs)) sleepPeriodsById
         groupedMinutesById = map (foldl1 (\(id, xs) (_, ys) -> (id, concat [xs, ys]))) $ groupBy ((==) `on` fst) $ sort sleepMinutesById
         uniqued = map (\(id, xs) -> (id, uniqC xs)) groupedMinutesById
-
-uniqC xs = map f $ group $ sort xs
-  where f xs = [length xs, head xs]
-
-step xs (Shift id) = (id, []):xs
-step ((id, evs):xs) x = (id, evs++[x]):xs
 
 data Event = Shift Id
            | Asleep Timestamp
@@ -38,12 +31,23 @@ data Event = Shift Id
 type Timestamp = Int
 type Id = Int
 
-markSleepMinutes s (start, end) = foldl (\s x -> Set.insert x s) s [start..end]
+groupByShift :: [(Int, [Event])] -> Event -> [(Id, [Event])]
+groupByShift xs (Shift id) = (id, []):xs
+groupByShift ((id, evs):xs) x = (id, evs++[x]):xs
 
-sleepPeriod (Asleep x) (Awake y) = (x, pred y)
-
+sleepPeriods :: [Event] -> [(Int, Int)]
 sleepPeriods [] = []
 sleepPeriods (x:y:xs) = (sleepPeriods xs) ++ [sleepPeriod x y]
+
+sleepPeriod :: Event -> Event -> (Int, Int)
+sleepPeriod (Asleep x) (Awake y) = (x, pred y)
+
+markSleepMinutes :: Set Int -> (Int, Int) -> Set Int
+markSleepMinutes s (start, end) = foldl (\s x -> Set.insert x s) s [start..end]
+
+uniqC :: [Int] -> [[Int]]
+uniqC xs = map f $ group $ sort xs
+  where f xs = [length xs, head xs]
 
 ---
 -- Parsing and main

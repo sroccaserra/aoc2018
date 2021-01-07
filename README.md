@@ -9,5 +9,5 @@ $ stack build
 ## Usage
 
 ```
-$ awk -f src/Day03.awk src/Day03Input.txt | stack runhaskell -- src/Day03.hs
+$ awk -f src/03.awk src/03.txt | stack runhaskell -- src/03.hs
 ```
