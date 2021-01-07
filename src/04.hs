@@ -26,25 +26,25 @@ partTwo xs = guardId * minute
         (guardId, (_, minute)) = maximumBy (comparing $ fst . snd ) maxMinutesById
 
 data Event = Shift Id
-           | Asleep Timestamp
-           | Awake Timestamp
+           | Asleep Minute
+           | Awake Minute
            deriving (Show, Eq)
 
-type Timestamp = Int
 type Id = Int
+type Minute = Int
 
-groupByShift :: [(Int, [Event])] -> Event -> [(Id, [Event])]
+groupByShift :: [(Id, [Event])] -> Event -> [(Id, [Event])]
 groupByShift xs (Shift id) = (id, []):xs
 groupByShift ((id, evs):xs) x = (id, evs++[x]):xs
 
-sleepPeriods :: [Event] -> [(Int, Int)]
+sleepPeriods :: [Event] -> [(Minute, Minute)]
 sleepPeriods [] = []
 sleepPeriods (x:y:xs) = (sleepPeriods xs) ++ [sleepPeriod x y]
 
-sleepPeriod :: Event -> Event -> (Int, Int)
+sleepPeriod :: Event -> Event -> (Minute, Minute)
 sleepPeriod (Asleep x) (Awake y) = (x, pred y)
 
-markSleepMinutes :: Set Int -> (Int, Int) -> Set Int
+markSleepMinutes :: Set Minute -> (Minute, Minute) -> Set Minute
 markSleepMinutes s (start, end) = foldl (\s x -> Set.insert x s) s [start..end]
 
 uniqC :: Ord a => [a] -> [(Int, a)]
@@ -58,7 +58,7 @@ parse = map parseLine . sort . lines
 
 parseLine = fst . last . readP_to_S (choice [shift, awake, asleep])
 
-timestamp :: ReadP Timestamp
+timestamp :: ReadP Minute
 timestamp =
   (munch1 $ not . isSpace) *> string " " *>
   (munch1 isDigit *> string ":") *> (read <$> munch1 isDigit)
