@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3efbfc594683ce7d94836e6f9e70f8f1df0cae37b5b0a122b1b2c8bce365c2e0
+-- hash: 3456768251c9a177aa704b5da5101ea17a159d8851617963ccfa553689d04010
 
 name:           aoc2018
 version:        0.1.0.0
@@ -26,6 +26,8 @@ source-repository head
   location: https://github.com/githubuser/aoc2018
 
 library
+  exposed-modules:
+      Common
   other-modules:
       Paths_aoc2018
   hs-source-dirs:

@@ -5,9 +5,10 @@ import qualified Data.Set as Set
 import Control.Applicative
 import Text.ParserCombinators.ReadP
 
+import Common (parseLines)
+
 main = do
-    contents <- getContents
-    let input = map parseLine $ lines contents
+    input <- parseLines $ sign <*> unsigned
     print $ partOne input
     print $ partTwo input
 
@@ -26,11 +27,8 @@ firstDuplicate = go Set.empty
 ---
 -- parsing
 
-parseLine :: String -> Int
-parseLine = fst . last . readP_to_S (sign <*> decimal)
-
-decimal :: ReadP Int
-decimal = read <$> munch1 isDigit
+unsigned :: ReadP Int
+unsigned = read <$> munch1 isDigit
 
 sign :: ReadP (Int -> Int)
 sign = (id <$ char '+') <|> (negate <$ char '-')
