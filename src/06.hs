@@ -1,13 +1,14 @@
-import Data.Char
 import Data.Ord
 import Data.List
 import Data.Map (Map, (!))
 import qualified Data.Map as Map
 import Text.ParserCombinators.ReadP
 
+import Common (parseLines, unsigned)
+
 main = do
-  points <- (map parseLine . lines) <$> getContents
-  mapM_ putStrLn $ partOne points
+  input <- parseLines point
+  mapM_ putStrLn $ partOne input
 
 partOne ps = map (namePoint . closestPoint ps) <$> gridForPoints ps
   where
@@ -25,13 +26,7 @@ closestPoint ps p = fst $ minimumBy (comparing snd) $ map (\x -> (x, distance p 
 
 distance (x1, y1) (x2, y2) = abs (x2 - x1) + abs (y2 -y1)
 
-parseLine :: String -> (Int, Int)
-parseLine = fst . last . readP_to_S point
-
 point :: ReadP (Int, Int)
-point = (,) <$> int <* string ", " <*> int
-
-int :: ReadP Int
-int = read <$> munch1 isDigit
+point = (,) <$> unsigned <* string ", " <*> unsigned
 
 symbols = (map chr [97..122]) ++ (map chr [65..90])
