@@ -10,22 +10,26 @@ main = do
   mapM_ putStrLn $ partOne points
 
 partOne ps = map (namePoint . closestPoint ps) <$> gridForPoints ps
-  where namePoint p = Map.findWithDefault '.' p pointNames
-        pointNames = Map.fromList $ zip ps symbols
+  where
+      namePoint p = Map.findWithDefault '.' p pointNames
+      pointNames = Map.fromList $ zip ps symbols
 
 gridForPoints ps = map (\y -> (map (flip (,) y) [0..maxX])) [0..maxY]
   where
-        maxX = maximum $ map fst ps
-        maxY = maximum $ map snd ps
+      maxX = maximum $ map fst ps
+      maxY = maximum $ map snd ps
 
 closestPoint ps p = fst $ minimumBy (comparing snd) $ map (\x -> (x, distance p x)) ps
-  where coords = gridForPoints ps
+  where
+      coords = gridForPoints ps
 
 distance (x1, y1) (x2, y2) = abs (x2 - x1) + abs (y2 -y1)
 
+parseLine :: String -> (Int, Int)
 parseLine = fst . last . readP_to_S point
 
-point = (,) <$> int <*> (string ", " *> int)
+point :: ReadP (Int, Int)
+point = (,) <$> int <* string ", " <*> int
 
 int :: ReadP Int
 int = read <$> munch1 isDigit
