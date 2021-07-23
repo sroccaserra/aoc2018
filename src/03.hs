@@ -1,26 +1,26 @@
 module Day03 where
 
+import Data.Char
 import Data.Function
+import Text.ParserCombinators.ReadP
 import qualified Data.Map as M
 
-main :: IO ()
+import Common (parseLines)
+
 main = do
-  ls <- fmap lines getContents
-  print $ partTwo ls
+  input <- parseLines parser
+  print $ partOne input
+  print $ partTwo input
 
-partOne :: [String] -> Int
-partOne ls = M.size $ M.filter (> 1) fabric
+partOne :: [Claim] -> Int
+partOne claims = M.size $ M.filter (> 1) fabric
   where
     fabric = foldr addPoints M.empty claims
-    claims = map createClaim numbers
-    numbers = map parseLine ls
 
-partTwo :: [String] -> [Claim]
-partTwo ls = filter (hasNoCollision fabric) claims
+partTwo :: [Claim] -> [Claim]
+partTwo claims = filter (hasNoCollision fabric) claims
   where
     fabric = foldr addPoints M.empty claims
-    claims = map createClaim numbers
-    numbers = map parseLine ls
 
 hasNoCollision :: Fabric -> Claim -> Bool
 hasNoCollision f = (== 1) . foldr max 0 . heights f
@@ -28,11 +28,21 @@ hasNoCollision f = (== 1) . foldr max 0 . heights f
 parseLine :: String -> [Int]
 parseLine = map read . words
 
-createClaim :: [Int] -> Claim
-createClaim [n, x, y, w, h] = Claim n x y (x+w-1) (y+h-1)
-createClaim xs = error message
-  where message =
-          "Wrong number of arguments: " ++ (xs & length & show) ++ " " ++ (show xs)
+parser :: ReadP Claim
+parser = do
+  char '#'
+  n <- int
+  string " @ "
+  x <- int
+  char ','
+  y <- int
+  string ": "
+  w <- int
+  char 'x'
+  h <- int
+  return $ Claim n x y (x+w-1) (y+h-1)
+
+int = read <$> munch1 isDigit
 
 data Claim = Claim {
   i :: Int,

@@ -9,7 +9,7 @@ $ stack build
 ## Usage
 
 ```
-$ awk -f src/03.awk src/03.txt | stack runhaskell -- src/03.hs
+$ stack runhaskell src/01.hs < src/01.txt
 ```
 
 ## Learnings
