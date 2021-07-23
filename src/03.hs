@@ -1,11 +1,10 @@
 module Day03 where
 
-import Data.Char
 import Data.Function
 import Text.ParserCombinators.ReadP
 import qualified Data.Map as M
 
-import Common (parseLines)
+import Common (parseLines, unsigned)
 
 main = do
   input <- parseLines parser
@@ -25,24 +24,19 @@ partTwo claims = filter (hasNoCollision fabric) claims
 hasNoCollision :: Fabric -> Claim -> Bool
 hasNoCollision f = (== 1) . foldr max 0 . heights f
 
-parseLine :: String -> [Int]
-parseLine = map read . words
-
 parser :: ReadP Claim
 parser = do
   char '#'
-  n <- int
+  n <- unsigned
   string " @ "
-  x <- int
+  x <- unsigned
   char ','
-  y <- int
+  y <- unsigned
   string ": "
-  w <- int
+  w <- unsigned
   char 'x'
-  h <- int
+  h <- unsigned
   return $ Claim n x y (x+w-1) (y+h-1)
-
-int = read <$> munch1 isDigit
 
 data Claim = Claim {
   i :: Int,

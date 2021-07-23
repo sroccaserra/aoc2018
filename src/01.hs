@@ -1,14 +1,11 @@
-import Data.Char
 import Data.Maybe (fromJust)
 import Data.Set (insert, member)
 import qualified Data.Set as Set
-import Control.Applicative
-import Text.ParserCombinators.ReadP
 
-import Common (parseLines)
+import Common (parseLines, signed)
 
 main = do
-    input <- parseLines $ sign <*> unsigned
+    input <- parseLines signed
     print $ partOne input
     print $ partTwo input
 
@@ -23,12 +20,3 @@ firstDuplicate = go Set.empty
       | member x s = Just x
       | otherwise = go (insert x s) xs
     go _ [] = Nothing
-
----
--- parsing
-
-unsigned :: ReadP Int
-unsigned = read <$> munch1 isDigit
-
-sign :: ReadP (Int -> Int)
-sign = (id <$ char '+') <|> (negate <$ char '-')
