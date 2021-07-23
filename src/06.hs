@@ -1,5 +1,6 @@
 import Data.Ord
 import Data.List
+import Data.Ix (range)
 import Data.Map (Map, (!))
 import qualified Data.Map as Map
 import Text.ParserCombinators.ReadP
@@ -29,4 +30,4 @@ distance (x1, y1) (x2, y2) = abs (x2 - x1) + abs (y2 -y1)
 point :: ReadP (Int, Int)
 point = (,) <$> unsigned <* string ", " <*> unsigned
 
-symbols = (map chr [97..122]) ++ (map chr [65..90])
+symbols = range ('a', 'z') ++ range ('A', 'Z')
