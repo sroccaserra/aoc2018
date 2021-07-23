@@ -5,10 +5,10 @@ import Data.Map (Map, (!))
 import qualified Data.Map as Map
 import Text.ParserCombinators.ReadP
 
-import Common (parseLines, unsigned)
+import Common (getParsedLines, unsigned)
 
 main = do
-  input <- parseLines point
+  input <- getParsedLines 6 point
   mapM_ putStrLn $ partOne input
 
 partOne ps = map (namePoint . closestPoint ps) <$> gridForPoints ps

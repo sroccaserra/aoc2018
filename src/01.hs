@@ -2,10 +2,10 @@ import Data.Maybe (fromJust)
 import Data.Set (insert, member)
 import qualified Data.Set as Set
 
-import Common (parseLines, signed)
+import Common (getParsedLines, signed)
 
 main = do
-    input <- parseLines signed
+    input <- getParsedLines 1 signed
     print $ partOne input
     print $ partTwo input
 

@@ -4,9 +4,19 @@ module Common
 import Control.Applicative
 import Data.Char
 import Text.ParserCombinators.ReadP
+import System.Environment
+import Text.Printf
 
-parseLines :: ReadP a -> IO [a]
-parseLines parser = map (parseLine parser) . lines <$> getContents
+getRawInput :: Int -> IO String
+getRawInput n = do
+  args <- getArgs
+  case args of
+       [] -> readFile (printf "src/%02d.txt" n)
+       "-":_ -> getContents
+       fileName:_ -> readFile fileName
+
+getParsedLines :: Int -> ReadP a -> IO [a]
+getParsedLines n parser = map (parseLine parser) . lines <$> getRawInput n
   where
     parseLine :: ReadP a -> String -> a
     parseLine p = fst . last . readP_to_S p

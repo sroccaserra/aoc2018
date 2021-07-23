@@ -4,10 +4,10 @@ import Data.Function
 import Text.ParserCombinators.ReadP
 import qualified Data.Map as M
 
-import Common (parseLines, unsigned)
+import Common (getParsedLines, unsigned)
 
 main = do
-  input <- parseLines parser
+  input <- getParsedLines 3 parser
   print $ partOne input
   print $ partTwo input
 

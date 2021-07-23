@@ -8,8 +8,11 @@ $ stack build
 
 ## Usage
 
+Those are equivalent:
 ```
-$ stack runhaskell src/01.hs < src/01.txt
+$ stack runhaskell src/01.hs  # Uses corresponding src/XX.txt file by default
+$ stack runhaskell src/01.hs src/01.txt  # Allows to choose the input file
+$ stack runhaskell src/01.hs - < src/01.txt  # Allows to use stdin
 ```
 
 ## Learnings
