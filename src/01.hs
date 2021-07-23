@@ -1,5 +1,6 @@
 import Data.Char
-import Data.Set (Set, insert, member)
+import Data.Maybe (fromJust)
+import Data.Set (insert, member)
 import qualified Data.Set as Set
 import Control.Applicative
 import Text.ParserCombinators.ReadP
@@ -12,13 +13,15 @@ main = do
 
 partOne = sum
 
-partTwo = result . last . takeWhile (not . found) . scanl step (False, Set.fromList [], 0) . cycle
+partTwo = fromJust . firstDuplicate . scanl1 (+) . cycle
+
+firstDuplicate :: [Int] -> Maybe Int
+firstDuplicate = go Set.empty
   where
-    step (_, s, freq) n = (member freq s, insert freq s, nextFreq)
-      where
-        nextFreq = freq + n
-    found (b, _, _) = b
-    result (_, _, f) = f
+    go s (x:xs)
+      | member x s = Just x
+      | otherwise = go (insert x s) xs
+    go _ [] = Nothing
 
 ---
 -- parsing
