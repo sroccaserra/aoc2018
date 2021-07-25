@@ -3,31 +3,37 @@ import Data.List
 import Data.Ix (range)
 import Data.Map (Map, (!))
 import qualified Data.Map as Map
+import qualified Data.Set as Set
 import Text.ParserCombinators.ReadP
 
 import Common (getParsedLines, unsigned)
 
 main = do
   input <- getParsedLines 6 point
-  mapM_ putStrLn $ partOne input
+  putStrLn $ partOne input
 
-partOne ps = map (namePoint . closestPoint ps) <$> gridForPoints ps
+partOne ps = showAsciiGrid '.' m
   where
-      namePoint p = Map.findWithDefault '.' p pointNames
-      pointNames = Map.fromList $ zip ps symbols
-
-gridForPoints ps = map (\y -> (map (flip (,) y) [0..maxX])) [0..maxY]
-  where
-      maxX = maximum $ map fst ps
-      maxY = maximum $ map snd ps
-
-closestPoint ps p = fst $ minimumBy (comparing snd) $ map (\x -> (x, distance p x)) ps
-  where
-      coords = gridForPoints ps
+    m = Map.fromList $ zip ps symbols
 
 distance (x1, y1) (x2, y2) = abs (x2 - x1) + abs (y2 -y1)
 
-point :: ReadP (Int, Int)
+type Point = (Int, Int)
+
+showAsciiGrid :: Char -> Map Point Char -> String
+showAsciiGrid c m = unlines $ do
+    y <- [minY..maxY]
+    return [Map.findWithDefault c (x, y) m | x <- [minX..maxX]]
+  where
+    points = Map.keysSet m
+    xs = Set.map fst points
+    ys = Set.map snd points
+    maxX = maximum xs
+    minX = minimum xs
+    maxY = maximum ys
+    minY = minimum ys
+
+point :: ReadP Point
 point = (,) <$> unsigned <* string ", " <*> unsigned
 
 symbols = range ('a', 'z') ++ range ('A', 'Z')
