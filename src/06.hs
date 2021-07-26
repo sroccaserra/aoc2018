@@ -12,9 +12,11 @@ main = do
 -- point = un point reçu en entrée
 -- coordonnée = un point x, y dans l'espace
 
-partOne points = maximum $ map length $ group $ sort $ filter (not.isBorder) $ map (snd . head) $ filter ((== 1) . length) $ head . groupBy ((==) `on` fst) . sort <$> distances
+partOne points = maximum $ map length $ group $ sort $ filter (not.isBorder) closestPoints
   where
     isBorder (Coord x y) = elem x [minX, maxX] || elem y [minY, maxY]
+    closestPoints = map (snd.head) closests
+    closests = filter ((==1) . length) $ head . groupBy ((==) `on` fst) . sort <$> distances
     distances = [[(distance c p, p) | p <- points] | c <- coords]
     coords = [Coord x y | y <- [minY..maxY], x <- [minX..maxX]]
     (Coord minX minY, Coord maxX maxY) = boundingBox points
