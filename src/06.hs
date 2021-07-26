@@ -16,24 +16,29 @@ partOne ps = showAsciiGrid '.' m
   where
     m = Map.fromList $ zip ps symbols
 
-distance (x1, y1) (x2, y2) = abs (x2 - x1) + abs (y2 -y1)
+distance (Point x1 y1) (Point x2 y2) = abs (x2 - x1) + abs (y2 - y1)
 
-type Point = (Int, Int)
+data Point = Point !Int !Int
+           deriving (Show, Eq, Ord)
+
+_x (Point x _) = x
+_y (Point _ y) = y
 
 showAsciiGrid :: Char -> Map Point Char -> String
 showAsciiGrid c m = unlines $ do
     y <- [minY..maxY]
-    return [Map.findWithDefault c (x, y) m | x <- [minX..maxX]]
+    return [Map.findWithDefault c (Point x y) m | x <- [minX..maxX]]
+  where
+    (Point minX minY, Point maxX maxY) = boundingBox m
+
+boundingBox :: Map Point a -> (Point, Point)
+boundingBox m = (Point (minimum xs) (minimum ys), Point (maximum xs) (maximum ys))
   where
     points = Map.keysSet m
-    xs = Set.map fst points
-    ys = Set.map snd points
-    maxX = maximum xs
-    minX = minimum xs
-    maxY = maximum ys
-    minY = minimum ys
+    xs = Set.map _x points
+    ys = Set.map _y points
 
 point :: ReadP Point
-point = (,) <$> unsigned <* string ", " <*> unsigned
+point = Point <$> unsigned <* string ", " <*> unsigned
 
 symbols = range ('a', 'z') ++ range ('A', 'Z')
