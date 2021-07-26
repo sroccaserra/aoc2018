@@ -7,6 +7,7 @@ import Common (getParsedLines, unsigned, Coord(..), boundingBox)
 main = do
   input <- getParsedLines 6 point
   print $ partOne input
+  print $ partTwo input
 
 -- conventions :
 -- point = un point reçu en entrée
@@ -18,6 +19,12 @@ partOne points = maximum $ map length $ group $ sort $ filter (not.isBorder) clo
     closestPoints = map (snd.head) closests
     closests = filter ((==1) . length) $ head . groupBy ((==) `on` fst) . sort <$> distances
     distances = [[(distance c p, p) | p <- points] | c <- coords]
+    coords = [Coord x y | y <- [minY..maxY], x <- [minX..maxX]]
+    (Coord minX minY, Coord maxX maxY) = boundingBox points
+
+partTwo points = length $ filter (< 10000) $ sum <$> distances
+  where
+    distances = [[distance c p | p <- points] | c <- coords]
     coords = [Coord x y | y <- [minY..maxY], x <- [minX..maxX]]
     (Coord minX minY, Coord maxX maxY) = boundingBox points
 
