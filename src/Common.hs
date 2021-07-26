@@ -41,3 +41,9 @@ _x (Coord x _) = x
 
 _y :: Coord -> Int
 _y (Coord _ y) = y
+
+boundingBox :: [Coord] -> (Coord, Coord)
+boundingBox cs = (Coord (minimum xs) (minimum ys), Coord (maximum xs) (maximum ys))
+  where
+    xs = map _x cs
+    ys = map _y cs

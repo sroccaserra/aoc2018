@@ -3,7 +3,7 @@ import Data.Map (Map)
 import qualified Data.Map as M
 import Text.ParserCombinators.ReadP
 
-import Common (getParsedLines, unsigned, Coord(..), _x, _y)
+import Common (getParsedLines, unsigned, Coord(..), boundingBox)
 
 main = do
   input <- getParsedLines 6 point
@@ -21,14 +21,7 @@ showAsciiGrid c m = unlines $ do
     y <- [minY..maxY]
     return [M.findWithDefault c (Coord x y) m | x <- [minX..maxX]]
   where
-    (Coord minX minY, Coord maxX maxY) = boundingBox m
-
-boundingBox :: Map Coord a -> (Coord, Coord)
-boundingBox m = (Coord (minimum xs) (minimum ys), Coord (maximum xs) (maximum ys))
-  where
-    points = M.keys m
-    xs = map _x points
-    ys = map _y points
+    (Coord minX minY, Coord maxX maxY) = boundingBox $ M.keys m
 
 point :: ReadP Coord
 point = Coord <$> unsigned <* string ", " <*> unsigned
