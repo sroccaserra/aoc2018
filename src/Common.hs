@@ -30,8 +30,14 @@ sign = (id <$ char '+') <|> (negate <$ char '-')
 signed :: ReadP Int
 signed = option id sign <*> unsigned
 
-data Point = Point !Int !Int
+---
+-- Coords
+
+data Coord = Coord !Int !Int
            deriving (Show, Eq, Ord)
 
-_x (Point x _) = x
-_y (Point _ y) = y
+_x :: Coord -> Int
+_x (Coord x _) = x
+
+_y :: Coord -> Int
+_y (Coord _ y) = y
