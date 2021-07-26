@@ -6,7 +6,7 @@ import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Text.ParserCombinators.ReadP
 
-import Common (getParsedLines, unsigned)
+import Common (getParsedLines, unsigned, Point(..), _x, _y)
 
 main = do
   input <- getParsedLines 6 point
@@ -17,12 +17,6 @@ partOne ps = showAsciiGrid '.' m
     m = Map.fromList $ zip ps symbols
 
 distance (Point x1 y1) (Point x2 y2) = abs (x2 - x1) + abs (y2 - y1)
-
-data Point = Point !Int !Int
-           deriving (Show, Eq, Ord)
-
-_x (Point x _) = x
-_y (Point _ y) = y
 
 showAsciiGrid :: Char -> Map Point Char -> String
 showAsciiGrid c m = unlines $ do
