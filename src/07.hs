@@ -6,7 +6,7 @@ import Common (getParsedLines)
 
 main = do
   input <- getParsedLines 7 parser
-  print $ partOne input
+  mapM_ print $ M.toList $ partOne input
 
 partOne input = m
   where
