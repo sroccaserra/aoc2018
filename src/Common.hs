@@ -3,6 +3,8 @@ module Common
 
 import Control.Applicative
 import Data.Char
+import Data.Map (Map)
+import qualified Data.Map as M
 import Text.ParserCombinators.ReadP
 import System.Environment
 import Text.Printf
@@ -47,3 +49,13 @@ boundingBox cs = (Coord (minimum xs) (minimum ys), Coord (maximum xs) (maximum y
   where
     xs = map _x cs
     ys = map _y cs
+
+-- `c` is the default char
+-- example of building a `Map Coord Char` from a list of points:
+-- m = M.fromList $ zip points (range ('a', 'z') ++ range ('A', 'Z'))
+showAsciiGrid :: Char -> Map Coord Char -> String
+showAsciiGrid c m = unlines $ do
+    y <- [minY..maxY]
+    return [M.findWithDefault c (Coord x y) m | x <- [minX..maxX]]
+  where
+    (Coord minX minY, Coord maxX maxY) = boundingBox $ M.keys m
