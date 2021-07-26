@@ -23,6 +23,6 @@ dependencies:
 library:
   source-dirs: src
   ghc-options:
-  - -Wall
+  - -W
   dependencies:
   - hspec >= 2.7.4 && < 3

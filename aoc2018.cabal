@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9f0e11e89eb0fffcddc34de48a0c321cffe5b08b2b13f92d86becddd88ca3b4d
+-- hash: d61e295de64c6871e302223432fdf87e43047c7130ec05c520c79fb603289626
 
 name:           aoc2018
 version:        0.1.0.0
@@ -29,7 +29,7 @@ library
       Paths_aoc2018
   hs-source-dirs:
       src
-  ghc-options: -Wall
+  ghc-options: -W
   build-depends:
       base >=4.7 && <5
     , containers

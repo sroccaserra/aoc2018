@@ -1,9 +1,6 @@
-import Data.Ord
-import Data.List
 import Data.Ix (range)
-import Data.Map (Map(..))
+import Data.Map (Map)
 import qualified Data.Map as M
-import qualified Data.Set as S
 import Text.ParserCombinators.ReadP
 
 import Common (getParsedLines, unsigned, Coord(..), _x, _y)
@@ -29,9 +26,9 @@ showAsciiGrid c m = unlines $ do
 boundingBox :: Map Coord a -> (Coord, Coord)
 boundingBox m = (Coord (minimum xs) (minimum ys), Coord (maximum xs) (maximum ys))
   where
-    points = M.keysSet m
-    xs = S.map _x points
-    ys = S.map _y points
+    points = M.keys m
+    xs = map _x points
+    ys = map _y points
 
 point :: ReadP Coord
 point = Coord <$> unsigned <* string ", " <*> unsigned
