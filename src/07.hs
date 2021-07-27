@@ -1,5 +1,8 @@
-import Data.Ix (range)
-import qualified Data.Map as M
+import qualified Data.Array as A
+import Data.Maybe
+import Data.Foldable
+import Data.Char
+import Data.Graph
 import Text.ParserCombinators.ReadP
 
 import Common (getParsedLines)
@@ -8,13 +11,19 @@ main = do
   input <- getParsedLines 7 parser
   print $ partOne input
 
-partOne input = findNext m
+partOne input = findNext g
   where
-    m = foldl (\acc (a, b) -> M.insertWith (++) a [b] acc) emptyMap input
-    emptyMap = M.fromList $ zip letters (cycle [""])
-    letters = range ('A', 'Z')
+    g = buildG (minVertex, maxVertex) input
+    minVertex = vertexFromLabel 'A'
+    maxVertex = vertexFromLabel 'Z'
 
-findNext m = until (([] ==) . (m M.!)) succ 'A'
+findNext g = labelFromVertex $ fst $ fromJust (find ((== []) . snd) $ A.assocs g)
 
-parser :: ReadP (Char, Char)
-parser = flip (,) <$> (string "Step " *> get) <*> (string " must be finished before step " *> get)
+labelFromVertex = chr
+vertexFromLabel = ord
+
+parser :: ReadP Edge
+parser = do
+  b <- string "Step " *> get
+  a <- string " must be finished before step " *> get
+  return (vertexFromLabel a, vertexFromLabel b)
