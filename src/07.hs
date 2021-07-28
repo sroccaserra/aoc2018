@@ -1,7 +1,5 @@
-import qualified Data.Array as A
-import Data.Maybe
-import Data.Foldable
-import Data.Char
+import Data.Array ((//), (!))
+import Data.Char (chr, ord)
 import Data.Graph
 import Text.ParserCombinators.ReadP
 
@@ -11,19 +9,24 @@ main = do
   input <- getParsedLines 7 parser
   print $ partOne input
 
-partOne input = findNext g
+partOne input = map chr $ snd $ (iterate step (g, [])) !! 26
   where
     g = buildG (minVertex, maxVertex) input
-    minVertex = vertexFromLabel 'A'
-    maxVertex = vertexFromLabel 'Z'
+    minVertex = ord 'A'
+    maxVertex = ord 'Z'
 
-findNext g = labelFromVertex $ fst $ fromJust (find ((== []) . snd) $ A.assocs g)
+step :: (Graph, [Vertex]) -> (Graph, [Vertex])
+step (g, is) = (g' // [(next, done)], is ++ [next])
+  where
+    next = findNext g
+    g' = filter (/= next) <$> g
+    done = [-1]
 
-labelFromVertex = chr
-vertexFromLabel = ord
+findNext :: Graph -> Vertex
+findNext g = head [i | i <- vertices g, [] == g ! i]
 
 parser :: ReadP Edge
 parser = do
   b <- string "Step " *> get
   a <- string " must be finished before step " *> get
-  return (vertexFromLabel a, vertexFromLabel b)
+  return (ord a, ord b)

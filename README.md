@@ -24,6 +24,10 @@ Voir aussi :
 
 ### Haskell
 
+- On peut construire un graph avec une liste d'arrêtes avec `buildG` ou `graphFromEdges`
+- Un `Vertex` est un `Int`, une `Edge` est un `(Int, Int)`, un `Graph` est un
+  `Array Int [Int]`. On peut donc manipuler un graph avec les fonctions de
+  `Array`.
 - Vérifier un fichier sans le compiler : `stack ghc -- -W -fno-code src/Common.hs`
 - Utiliser un label dans un pattern matching :
     - `bb@(Coord minX minY, Coord maxX maxY) = boundingBox points`
@@ -32,7 +36,8 @@ Voir aussi :
 - Utiliser `let` pour affecter le résultat d'un calcul non `IO` dans une `do` notation (voir le `main` du jour 1)
 - Générer une liste de liste de coordonnées (par exemple `[[(Int, Int)]]`) :
     - `coordsGrid = map (\y -> (map (flip (,) y) [0..maxX])) [0..maxY]`
+    - `coordsGrid = [[(x, y) | x <- [0..maxX]] | y <- [0..maxY]]`
 - Voir aussi `range((0, 0), (maxX, maxY))` dans `Data.Ix`
 - Appliquer une fonction sur toutes les coordonnées d'une liste de liste :
     - `map f <$> coordsGrid`
-    - (appliquer `map f` à l'Applicative `List`, soit `map (map f) coordsGrid`)
+    - (appliquer `map f` au Functor `List`, soit `map (map f) coordsGrid`)
