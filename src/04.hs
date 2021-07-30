@@ -1,10 +1,16 @@
-import Data.Char
 import Data.Function
 import Data.List
 import Data.Ord
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Text.ParserCombinators.ReadP
+
+import Common (getLines, parseLine, unsigned)
+
+main = do
+  input <- map (parseLine parser) . sort <$> getLines 4
+  print $ partOne input
+  print $ partTwo input
 
 partOne xs = guardId * minute
   where grouped = foldl groupByShift [] xs
@@ -52,23 +58,14 @@ uniqC xs = map f $ group $ sort xs
   where f xs = (length xs, head xs)
 
 ---
--- Parsing and main
+-- Parsing
 
-parse = map parseLine . sort . lines
+parser :: ReadP Event
+parser = choice [shift, awake, asleep]
 
-parseLine = fst . last . readP_to_S (choice [shift, awake, asleep])
+shift = minute *> string " Guard #" *> (Shift <$> unsigned)
+awake = Awake <$> minute <* string " wakes up"
+asleep = Asleep <$> minute <* string " falls asleep"
 
-timestamp :: ReadP Minute
-timestamp =
-  (munch1 $ not . isSpace) *> string " " *>
-  (munch1 isDigit *> string ":") *> (read <$> munch1 isDigit)
-  <* string "] "
-
-shift = timestamp *> string "Guard #" *> (Shift . read <$> munch1 isDigit)
-awake = Awake <$> timestamp <* string "wakes up"
-asleep = Asleep <$> timestamp <* string "falls asleep"
-
-main = do
-  input <- getContents
-  print $ partOne $ parse input
-  print $ partTwo $ parse input
+minute :: ReadP Minute
+minute = munch1 (not . (== ':')) *> char ':' *> unsigned <* char ']'

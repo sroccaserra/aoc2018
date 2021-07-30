@@ -22,18 +22,18 @@ getLines n = lines <$> getRawInput n
 
 getParsedLines :: Int -> ReadP a -> IO [a]
 getParsedLines n parser = map (parseLine parser) <$> getLines n
-  where
-    parseLine :: ReadP a -> String -> a
-    parseLine p = fst . last . readP_to_S p
+
+parseLine :: ReadP a -> String -> a
+parseLine p = fst . last . readP_to_S p
 
 unsigned :: ReadP Int
 unsigned = read <$> munch1 isDigit
 
-sign :: ReadP (Int -> Int)
-sign = (id <$ char '+') <|> (negate <$ char '-')
-
 signed :: ReadP Int
 signed = option id sign <*> unsigned
+  where
+    sign :: ReadP (Int -> Int)
+    sign = (id <$ char '+') <|> (negate <$ char '-')
 
 ---
 -- Coords
