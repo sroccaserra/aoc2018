@@ -1,6 +1,13 @@
 import Data.Char
 import Data.List
 
+import Common (getLines)
+
+main = do
+  input <- head <$> getLines 5
+  print $ partOne input
+  print $ partTwo input
+
 partOne = length . fullReact
 
 partTwo xs = minimum lengths
@@ -15,8 +22,3 @@ fullReact = foldr step ""
 doesReact x y = x /= y && toUpper x == toUpper y
 
 exclude c = filter ((/= c) . toLower)
-
-main = do
-  input <- getContents
-  print $ partOne $ head $ lines input
-  print $ partTwo $ head $ lines input
