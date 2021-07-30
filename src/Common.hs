@@ -17,8 +17,11 @@ getRawInput n = do
        "-":_ -> getContents
        fileName:_ -> readFile fileName
 
+getLines :: Int -> IO [String]
+getLines n = lines <$> getRawInput n
+
 getParsedLines :: Int -> ReadP a -> IO [a]
-getParsedLines n parser = map (parseLine parser) . lines <$> getRawInput n
+getParsedLines n parser = map (parseLine parser) <$> getLines n
   where
     parseLine :: ReadP a -> String -> a
     parseLine p = fst . last . readP_to_S p

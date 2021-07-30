@@ -1,8 +1,10 @@
 import Data.List
 import Data.Maybe
 
+import Common (getLines)
+
 main = do
-  input <- lines <$> getContents
+  input <- getLines 2
   print $ partOne input
 
 partOne boxIds = numberOfSame 2 boxIds * numberOfSame 3 boxIds
