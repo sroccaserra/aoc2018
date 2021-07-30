@@ -7,16 +7,16 @@ import Common (getParsedLines)
 
 main = do
   input <- getParsedLines 7 parser
-  print $ partOne input
+  putStrLn $ partOne input
 
-partOne input = map chr $ snd $ (iterate step (g, [])) !! 26
+partOne input = map chr $ fst $ (iterate step ([], g)) !! 26
   where
     g = buildG (minVertex, maxVertex) input
     minVertex = ord 'A'
     maxVertex = ord 'Z'
 
-step :: (Graph, [Vertex]) -> (Graph, [Vertex])
-step (g, is) = (g' // [(next, done)], is ++ [next])
+step :: ([Vertex], Graph) -> ([Vertex], Graph)
+step (is, g) = (is ++ [next], g' // [(next, done)])
   where
     next = findNext g
     g' = filter (/= next) <$> g
