@@ -5,10 +5,10 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 import Text.ParserCombinators.ReadP
 
-import Common (getLines, parseLine, unsigned)
+import Common (getDayLines, parseLine, unsigned)
 
 main = do
-  input <- map (parseLine parser) . sort <$> getLines 4
+  input <- map (parseLine parser) . sort <$> getDayLines 4
   print $ partOne input
   print $ partTwo input
 

@@ -9,19 +9,22 @@ import Text.ParserCombinators.ReadP
 import System.Environment
 import Text.Printf
 
-getRawInput :: Int -> IO String
-getRawInput day = do
+getDayRawInput :: Int -> IO String
+getDayRawInput day = do
   args <- getArgs
   case args of
        [] -> readFile (printf "src/%02d.txt" day)
        "-":_ -> getContents
        fileName:_ -> readFile fileName
 
-getLines :: Int -> IO [String]
-getLines day = lines <$> getRawInput day
+getDayLines :: Int -> IO [String]
+getDayLines day = lines <$> getDayRawInput day
+
+getDayLine :: Int -> IO String
+getDayLine day = head <$> getDayLines day
 
 getParsedLines :: Int -> ReadP a -> IO [a]
-getParsedLines day parser = map (parseLine parser) <$> getLines day
+getParsedLines day parser = map (parseLine parser) <$> getDayLines day
 
 parseLine :: ReadP a -> String -> a
 parseLine p = fst . last . readP_to_S p

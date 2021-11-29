@@ -1,10 +1,10 @@
 import Data.Char
 import Data.List
 
-import Common (getLines)
+import Common (getDayLines)
 
 main = do
-  input <- head <$> getLines 5
+  input <- head <$> getDayLines 5
   print $ partOne input
   print $ partTwo input
 

@@ -2,10 +2,10 @@ import Data.Char
 import Data.List
 import Data.Maybe
 
-import Common (getLines)
+import Common (getDayLines)
 
 main = do
-  input <- getLines 2
+  input <- getDayLines 2
   print $ partOne input
   putStrLn $ partTwo input
 
