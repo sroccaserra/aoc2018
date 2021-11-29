@@ -10,18 +10,18 @@ import System.Environment
 import Text.Printf
 
 getRawInput :: Int -> IO String
-getRawInput n = do
+getRawInput day = do
   args <- getArgs
   case args of
-       [] -> readFile (printf "src/%02d.txt" n)
+       [] -> readFile (printf "src/%02d.txt" day)
        "-":_ -> getContents
        fileName:_ -> readFile fileName
 
 getLines :: Int -> IO [String]
-getLines n = lines <$> getRawInput n
+getLines day = lines <$> getRawInput day
 
 getParsedLines :: Int -> ReadP a -> IO [a]
-getParsedLines n parser = map (parseLine parser) <$> getLines n
+getParsedLines day parser = map (parseLine parser) <$> getLines day
 
 parseLine :: ReadP a -> String -> a
 parseLine p = fst . last . readP_to_S p
