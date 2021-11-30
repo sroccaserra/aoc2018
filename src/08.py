@@ -2,16 +2,12 @@ import sys
 import fileinput
 
 from queue import SimpleQueue
-from types import SimpleNamespace
 
-s = 0
-
-def solve(ns):
+def solve_part_one(ns):
     q = SimpleQueue()
     for n in ns:
         q.put(n)
-    tree = makeTree(q)
-    return tree, s
+    return walk_tree_1(q)
 
 
 #  2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2
@@ -19,24 +15,19 @@ def solve(ns):
 #      B----------- C-----------
 #                       D-----
 
-def makeTree(q):
-    tree = SimpleNamespace()
+
+def walk_tree_1(q):
     c = q.get()
     n = q.get()
-    tree.c = c
-    tree.n = n
-    tree.children = []
-    tree.sum = 0
-    global s
+    s = 0
     for _ in range(c):
-        tree.children.append(makeTree(q))
+        s += walk_tree_1(q)
     for _ in range(n):
-        tree.sum += q.get()
-    s += tree.sum
-    return tree
+        s += q.get()
+    return s
 
 
 if __name__ == '__main__' and not sys.flags.interactive:
     line = next(fileinput.input())
     ns = [int(s) for s in line.split()]
-    print(solve(ns))
+    print(solve_part_one(ns))
