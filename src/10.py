@@ -2,15 +2,24 @@ import sys
 import fileinput
 import re
 
-W = 150
-H = 40
 
-def solve_1(data):
+W = 55
+H = 9
+
+
+def solve(data):
     n = 0
+    last_width = 100000000
     while True:
-        n += 1
         data = step(data)
         r = rect(data)
+
+        width = r[2]
+        if width > last_width:
+            break
+        last_width = width
+
+        n += 1
         a_x = W/r[2]
         b_x = -r[0]*a_x
         a_y = H/r[3]
@@ -21,10 +30,11 @@ def solve_1(data):
             i = round(p[1])
             j = round(p[0])
             grid[i][j] = '#'
-        print('\033c')
-        print('%'*(W+1))
-        print(n)
-        print_grid(grid)
+        if 0 == n % 1000:
+            print(n)
+
+    print(n)
+    print_grid(grid)
 
 
 def rect(data):
@@ -74,6 +84,4 @@ def parse_vel(line):
 if __name__ == '__main__' and not sys.flags.interactive:
     lines = [line.strip() for line in fileinput.input()]
     data = [(parse_pos(line), parse_vel(line)) for line in lines]
-    print(data[0])
-    print(step(data)[0])
-    solve_1(data)
+    solve(data)
