@@ -6,7 +6,7 @@ from collections import defaultdict
 words = next(fileinput.input()).split()
 
 nb_players = int(words[0])
-last_marble = int(words[6])
+last_marble = int(words[6])*100
 
 class DLList:
     def __init__(self, value):
@@ -59,7 +59,11 @@ def drop(dl):
     dl.prev.next = n
     pass
 
+print(nb_players, last_marble)
+
 for marble in range(1, last_marble+1):
+    if 0 == marble % (last_marble / 100):
+        print(marble)
     current = step(marble, current)
 
 # print_dl(current)
