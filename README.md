@@ -22,6 +22,13 @@ Voir aussi :
 - <https://github.com/sroccaserra/aoc2019#learnings>
 - <https://github.com/sroccaserra/aoc2020#learnings>
 
+### Algorithmes
+
+- Summed-area table ~ <https://en.wikipedia.org/wiki/Summed-area_table>
+    - A summed-area table is a data structure and algorithm for quickly and
+      efficiently generating the sum of values in a rectangular subset of a
+      grid.
+
 ### Haskell
 
 - On peut construire un graph avec une liste d'arrêtes avec `buildG` ou `graphFromEdges`
