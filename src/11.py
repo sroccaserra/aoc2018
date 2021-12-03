@@ -2,24 +2,66 @@ import sys
 import fileinput
 
 
-def solve_1(sn):
+def solve_1(power_levels):
     max_total_level = 0
     corner_x = 0
     corner_y = 0
-    for y in range(1, 298):
-        for x in range(1, 298):
-            square_level = sum(square(sn, x, y))
-            if square_level > max_total_level:
-                max_total_level = square_level
-                corner_x = x
-                corner_y = y
+    m = {}
+    for s in range(1, 4):
+        print(s, end="\r")
+        for y in range(1, 301-s):
+            for x in range(1, 301-s):
+                level = square_level(m, power_levels, s, x, y)
+                if s == 3 and level > max_total_level:
+                    max_total_level = level
+                    corner_x = x
+                    corner_y = y
     return corner_x, corner_y
 
 
-def square(sn, x_1, y_1):
-    w = 3
-    h = 3
-    return [power_level(sn, x, y) for x in range(x_1, x_1+w) for y in range(y_1, y_1+h)]
+def solve_2(power_levels):
+    """
+    1234.
+    2234.
+    3334.
+    4444.
+    .....
+    """
+    max_total_level = 0
+    corner_x = 0
+    corner_y = 0
+    size = 0
+    m = {}
+    for s in range(1, 301):
+        print(s, end="\r")
+        for y in range(1, 301-s):
+            for x in range(1, 301-s):
+                level = square_level(m, power_levels, s, x, y)
+                if level > max_total_level:
+                    max_total_level = level
+                    corner_x = x
+                    corner_y = y
+                    size = s
+
+    return corner_x, corner_y, size
+
+
+def square_level(m, power_levels, n, x, y):
+    prev = m.get((n-1, x, y))
+    if prev is None:
+        level = sum(square(power_levels, n, x, y))
+        m[(n, x, y)] = level
+        return level
+    else:
+        result = prev + power_levels[y+n-2][x+n-2]
+        for i in range(1, n):
+            result += power_levels[y+n-2][x+i-2] + power_levels[y+i-2][x+n-2]
+        m[(n, x, y)] = result
+        return result
+
+
+def square(power_levels, w, x_1, y_1):
+    return [power_levels[y-1][x-1] for x in range(x_1, x_1+w) for y in range(y_1, y_1+w)]
 
 
 def power_level(sn, x, y):
@@ -33,4 +75,6 @@ def power_level(sn, x, y):
 
 if __name__ == '__main__' and not sys.flags.interactive:
     sn = int(next(fileinput.input()).strip())
-    print(solve_1(sn))
+    power_levels = [[power_level(sn, x, y) for x in range(1, 301)] for y in range(1, 301)]
+    print(solve_1(power_levels))
+    print(solve_2(power_levels))
