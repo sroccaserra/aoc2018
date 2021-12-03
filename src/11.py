@@ -5,18 +5,8 @@ from collections import defaultdict
 
 def solve_1(sn):
     table = summed_area_table(sn)
-    max_total_level = 0
-    corner_x = 0
-    corner_y = 0
-    s = 3
-    for y in range(1, 301-s):
-        for x in range(1, 301-s):
-            level = table[(x-1,y-1)]+table[(x-1+s, y-1+s)]-table[(x-1,y-1+s)]-table[(x-1+s, y-1)]
-            if level > max_total_level:
-                max_total_level = level
-                corner_x = x
-                corner_y = y
-    return corner_x, corner_y
+    _, x, y = best(table, 3)
+    return x, y
 
 
 def solve_2(power_levels):
@@ -27,16 +17,29 @@ def solve_2(power_levels):
     size = 0
     for s in range(1, 301):
         print(s, end="\r")
-        for y in range(1, 301-s):
-            for x in range(1, 301-s):
-                level = table[(x-1,y-1)]+table[(x-1+s, y-1+s)]-table[(x-1,y-1+s)]-table[(x-1+s, y-1)]
-                if level > max_total_level:
-                    max_total_level = level
-                    corner_x = x
-                    corner_y = y
-                    size = s
+        level, x, y = best(table, s)
+        if level > max_total_level:
+            max_total_level = level
+            corner_x = x
+            corner_y = y
+            size = s
 
     return corner_x, corner_y, size
+
+
+def best(t, s):
+    max_total_level = 0
+    corner_x = 0
+    corner_y = 0
+    for y in range(1, 301-s):
+        for x in range(1, 301-s):
+            level = t[(x-1,y-1)]+t[(x-1+s, y-1+s)]-t[(x-1,y-1+s)]-t[(x-1+s, y-1)]
+            if level > max_total_level:
+                max_total_level = level
+                corner_x = x
+                corner_y = y
+                size = s
+    return max_total_level, corner_x, corner_y
 
 
 def summed_area_table(sn):
