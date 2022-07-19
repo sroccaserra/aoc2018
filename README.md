@@ -30,6 +30,12 @@ Voir aussi :
       efficiently generating the sum of values in a rectangular subset of a
       grid.
 
+- When confronted with huge numbers (billions!) of iterations in the secont
+  part after a more reasonable first part, look for a stabilisation. For
+  example, after 10 times the first part, does the result between two
+  iterations become the same? Look for cycles also. If there is a constant
+  delta or a cycle, this becomes an easy calculation.
+
 ### Haskell
 
 - On peut construire un graph avec une liste d'arrêtes avec `buildG` ou `graphFromEdges`
