@@ -102,6 +102,5 @@ AoC2018Day15 >> solve [
 		(goblins includesKey: pos) ifTrue: [ 
 			unitsToMove addLast: (goblins at: pos) ] ].
 
-	(grid freeNeighborsAt: unitsToMove first position) do: [ :pos | 
-		markers add: pos ]
+	markers addAll: (grid freeNeighborsAt: unitsToMove first position)
 ]
