@@ -49,6 +49,16 @@ AoCTextGrid >> charAt: aPoint [
 ]
 
 { #category : #accessing }
+AoCTextGrid >> findChar: aChar [
+
+	| result |
+	result := OrderedCollection new.
+	dict associationsDo: [ :assoc | 
+		assoc value = aChar ifTrue: [ result addLast: assoc key ] ].
+	^ result
+]
+
+{ #category : #accessing }
 AoCTextGrid >> h [
 
 	^ h
