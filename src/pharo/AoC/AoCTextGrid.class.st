@@ -21,8 +21,8 @@ AoCTextGrid class >> fromLines: lines [
 	w := (lines at: 1) size.
 	h := lines size.
 	result := self new w: w h: h.
-	lines doWithIndex: [ :line :i | 
-		line doWithIndex: [ :char :j | result at: j @ i put: char ] ].
+	lines withIndexDo: [ :line :i | 
+		line withIndexDo: [ :char :j | result at: j @ i put: char ] ].
 	^ result
 ]
 
@@ -49,6 +49,12 @@ AoCTextGrid >> charAt: aPoint [
 ]
 
 { #category : #accessing }
+AoCTextGrid >> clearAt: aPoint [
+
+	self at: aPoint put: $.
+]
+
+{ #category : #accessing }
 AoCTextGrid >> findChar: aChar [
 
 	| result |
@@ -56,6 +62,18 @@ AoCTextGrid >> findChar: aChar [
 	dict associationsDo: [ :assoc | 
 		assoc value = aChar ifTrue: [ result addLast: assoc key ] ].
 	^ result
+]
+
+{ #category : #accessing }
+AoCTextGrid >> freeNeighborsAt: aPoint [
+
+	| neighbors |
+	neighbors := { 
+		             (1 @ 0).
+		             (-1 @ 0).
+		             (0 @ 1).
+		             (0 @ -1) } collect: [ :inc | aPoint + inc ].
+	^ neighbors select: [ :neighbor | (self charAt: neighbor) = $. ]
 ]
 
 { #category : #accessing }
@@ -68,6 +86,12 @@ AoCTextGrid >> h [
 AoCTextGrid >> initialize [
 
 	dict := Dictionary new.
+]
+
+{ #category : #enumerating }
+AoCTextGrid >> positionsDo: aBlock [
+
+	1 to: h do: [ :i | 1 to: w do: [ :j | aBlock value: j @ i ] ]
 ]
 
 { #category : #accessing }

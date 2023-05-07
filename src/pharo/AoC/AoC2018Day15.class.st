@@ -1,7 +1,7 @@
 "
 Example:
 
-AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt'
+AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 
 "
 Class {
@@ -15,7 +15,7 @@ Class {
 	#category : #'AoC-2018'
 }
 
-{ #category : #showing }
+{ #category : #accessing }
 AoC2018Day15 >> charAt: aPoint [
 
 	(elves includesKey: aPoint) ifTrue: [ ^ $E ].
@@ -23,8 +23,31 @@ AoC2018Day15 >> charAt: aPoint [
 	^ grid charAt: aPoint
 ]
 
+{ #category : #running }
+AoC2018Day15 >> run: filename [
+
+	| lines elfPositions goblinPositions |
+	lines := self loadLines: filename.
+	grid := AoCTextGrid fromLines: lines.
+	elfPositions := grid findChar: $E.
+	goblinPositions := grid findChar: $G.
+
+	elves := Dictionary new.
+	goblins := Dictionary new.
+
+	elfPositions do: [ :pos | 
+		elves at: pos put: (Elf new position: pos yourself).
+		grid clearAt: pos ].
+
+	goblinPositions do: [ :pos | 
+		goblins at: pos put: (Goblin new position: pos yourself).
+		grid clearAt: pos ].
+
+	^ self solve
+]
+
 { #category : #showing }
-AoC2018Day15 >> openInWindow [
+AoC2018Day15 >> show [
 
 	| frame canvas wallTile groundTile elfTile goblinTile tiles |
 	wallTile := AoCGraphics pico8StringToForm:
@@ -54,33 +77,16 @@ AoC2018Day15 >> openInWindow [
 	(frame magnifyBy: 2) asMorph openInWindow
 ]
 
-{ #category : #running }
-AoC2018Day15 >> run: filename [
-
-	| lines elfPositions goblinPositions |
-	lines := self loadLines: filename.
-	grid := AoCTextGrid fromLines: lines.
-	elfPositions := grid findChar: $E.
-	goblinPositions := grid findChar: $G.
-
-	elves := Dictionary new.
-	goblins := Dictionary new.
-
-	elfPositions do: [ :pos | 
-		elves at: pos put: (Elf new position: pos yourself).
-		grid at: pos put: $. ].
-
-	goblinPositions do: [ :pos | 
-		goblins at: pos put: (Goblin new position: pos yourself).
-		grid at: pos put: $. ].
-
-	^ self solve
-]
-
 { #category : #solving }
 AoC2018Day15 >> solve [
 
-	self openInWindow.
+	| unitsToMove |
+	unitsToMove := OrderedCollection new.
+	grid positionsDo: [ :pos | 
+		(elves includesKey: pos) ifTrue: [ 
+			unitsToMove addLast: (elves at: pos) ].
+		(goblins includesKey: pos) ifTrue: [ 
+			unitsToMove addLast: (goblins at: pos) ] ].
 
-	^ elves
+	^ grid freeNeighborsAt: (unitsToMove first position)
 ]
