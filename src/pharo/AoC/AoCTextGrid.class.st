@@ -67,12 +67,13 @@ AoCTextGrid >> findChar: aChar [
 { #category : #accessing }
 AoCTextGrid >> freeNeighborsAt: aPoint [
 
-	| neighbors |
-	neighbors := { 
-		             (1 @ 0).
-		             (-1 @ 0).
-		             (0 @ 1).
-		             (0 @ -1) } collect: [ :inc | aPoint + inc ].
+	| neighbors increments |
+	increments := { 
+		              (1 @ 0).
+		              (-1 @ 0).
+		              (0 @ 1).
+		              (0 @ -1) }.
+	neighbors := increments collect: [ :inc | aPoint + inc ].
 	^ neighbors select: [ :neighbor | (self charAt: neighbor) = $. ]
 ]
 

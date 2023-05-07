@@ -42,6 +42,30 @@ AoCGraphics class >> initialize [
 ]
 
 { #category : #displaying }
+AoCGraphics class >> markerForm [
+
+	| w h form y bitRows color transparentColor |
+	h := 8.
+	w := 8.
+	color := Color red.
+	transparentColor := Color
+		                    r: 0
+		                    g: 0
+		                    b: 0
+		                    alpha: 0.
+	bitRows := #( 2r11100111 2r10000001 2r10000001 2r00000000 2r00000000
+	              2r10000001 2r10000001 2r11100111 ).
+	form := Form extent: w @ h depth: 32.
+	bitRows doWithIndex: [ :line :n | 
+		y := n - 1.
+		0 to: w - 1 do: [ :x | 
+			(line bitAt: w - x) = 1
+				ifTrue: [ form colorAt: x @ y put: color ]
+				ifFalse: [ form colorAt: x @ y put: transparentColor ] ] ].
+	^ form
+]
+
+{ #category : #displaying }
 AoCGraphics class >> nibbleRowsToForm: nibbleRows [
 
 	| formW formH form y xOffset nibbleSize colorNumber |
