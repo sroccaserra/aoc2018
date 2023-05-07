@@ -2,7 +2,7 @@
 No comment.
 "
 Class {
-	#name : #Elf,
+	#name : #Goblin,
 	#superclass : #AoCMob,
 	#category : #'AoC-2018'
 }

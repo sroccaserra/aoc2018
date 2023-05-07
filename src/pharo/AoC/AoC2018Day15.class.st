@@ -10,7 +10,7 @@ Class {
 	#instVars : [
 		'grid',
 		'elves',
-		'gnomes'
+		'goblins'
 	],
 	#category : #'AoC-2018'
 }
@@ -19,14 +19,14 @@ Class {
 AoC2018Day15 >> charAt: aPoint [
 
 	(elves includesKey: aPoint) ifTrue: [ ^ $E ].
-	(gnomes includesKey: aPoint) ifTrue: [ ^ $G ].
+	(goblins includesKey: aPoint) ifTrue: [ ^ $G ].
 	^ grid charAt: aPoint
 ]
 
 { #category : #showing }
 AoC2018Day15 >> openInWindow [
 
-	| frame canvas wallTile groundTile elfTile gnomeTile tiles |
+	| frame canvas wallTile groundTile elfTile goblinTile tiles |
 	wallTile := AoCGraphics pico8StringToForm:
 		            '[gfx]0808999999999aaaaaa49a4444429422222299999999aaa49aaa44429a4422229422[/gfx]'.
 
@@ -36,13 +36,13 @@ AoC2018Day15 >> openInWindow [
 	elfTile := AoCGraphics pico8StringToForm:
 		           '[gfx]08082222222222244222224fff22224ff222fcccccf2226662222262622226626622[/gfx]'.
 
-	gnomeTile := AoCGraphics pico8StringToForm:
+	goblinTile := AoCGraphics pico8StringToForm:
 		             '[gfx]0808222222222b222b2222bbb222b22b22b22bbbbb2222bbb2222b222b222b222b22[/gfx]'.
 
 	tiles := Dictionary new.
 	tiles at: $# put: wallTile.
 	tiles at: $E put: elfTile.
-	tiles at: $G put: gnomeTile.
+	tiles at: $G put: goblinTile.
 
 	frame := Form extent: (grid w) * 8 @ ((grid h)  * 8) depth: 32.
 	canvas := frame getCanvas.
@@ -57,21 +57,21 @@ AoC2018Day15 >> openInWindow [
 { #category : #running }
 AoC2018Day15 >> run: filename [
 
-	| lines elfPositions gnomePositions |
+	| lines elfPositions goblinPositions |
 	lines := self loadLines: filename.
 	grid := AoCTextGrid fromLines: lines.
 	elfPositions := grid findChar: $E.
-	gnomePositions := grid findChar: $G.
+	goblinPositions := grid findChar: $G.
 
 	elves := Dictionary new.
-	gnomes := Dictionary new.
+	goblins := Dictionary new.
 
 	elfPositions do: [ :pos | 
 		elves at: pos put: (Elf new position: pos yourself).
 		grid at: pos put: $. ].
 
-	gnomePositions do: [ :pos | 
-		gnomes at: pos put: (Gnome new position: pos yourself).
+	goblinPositions do: [ :pos | 
+		goblins at: pos put: (Goblin new position: pos yourself).
 		grid at: pos put: $. ].
 
 	^ self solve

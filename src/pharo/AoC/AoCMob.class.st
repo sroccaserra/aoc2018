@@ -2,7 +2,7 @@
 No comment.
 "
 Class {
-	#name : #Gnome,
+	#name : #AoCMob,
 	#superclass : #Object,
 	#instVars : [
 		'position'
@@ -11,7 +11,7 @@ Class {
 }
 
 { #category : #accessing }
-Gnome >> position: aPoint [
+AoCMob >> position: aPoint [
 
 	position := aPoint
 ]
