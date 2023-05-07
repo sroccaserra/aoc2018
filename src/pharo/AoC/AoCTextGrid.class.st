@@ -1,5 +1,7 @@
 "
-No comment.
+I represent a text grid of dimensions w and h.
+
+I am indexed by `x@y` (or `j@i`) points, with `1 <= x <= w` and `1 <= y <= h`.
 "
 Class {
 	#name : #AoCTextGrid,
@@ -15,13 +17,12 @@ Class {
 { #category : #'instance creation' }
 AoCTextGrid class >> fromLines: lines [
 
-	| w h result line |
+	| w h result |
 	w := (lines at: 1) size.
 	h := lines size.
 	result := self new w: w h: h.
-	1 to: h do: [ :i | 
-		line := lines at: i.
-		1 to: w do: [ :j | result at: j @ i put: (line at: j) ] ].
+	lines doWithIndex: [ :line :i | 
+		line doWithIndex: [ :char :j | result at: j @ i put: char ] ].
 	^ result
 ]
 

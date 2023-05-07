@@ -29,40 +29,16 @@ AoCGraphics class >> bitRowsToForm: bitRows [
 AoCGraphics class >> initialize [
 
 	c64Palette := Dictionary new.
-	c64Palette at: 0 put: Color black.
-	c64Palette at: 1 put: Color white.
-	c64Palette at: 2 put: (Color fromHexString: '880000').
-	c64Palette at: 3 put: (Color fromHexString: 'AAFFEE').
-	c64Palette at: 4 put: (Color fromHexString: 'CC44CC').
-	c64Palette at: 5 put: (Color fromHexString: '00CC55').
-	c64Palette at: 6 put: (Color fromHexString: '0000AA').
-	c64Palette at: 7 put: (Color fromHexString: 'EEEE77').
-	c64Palette at: 8 put: (Color fromHexString: 'DD8855').
-	c64Palette at: 9 put: (Color fromHexString: '664400').
-	c64Palette at: 10 put: (Color fromHexString: 'FF7777').
-	c64Palette at: 11 put: (Color fromHexString: '333333').
-	c64Palette at: 12 put: (Color fromHexString: '777777').
-	c64Palette at: 13 put: (Color fromHexString: 'AAFF66').
-	c64Palette at: 14 put: (Color fromHexString: '0088FF').
-	c64Palette at: 15 put: (Color fromHexString: 'BBBBBB').
+	#( '000000' 'FFFFFF' '880000' 'AAFFEE' 'CC44CC' '00CC55' '0000AA'
+	   'EEEE77' 'DD8855' '664400' 'FF7777' '333333' '777777' 'AAFF66'
+	   '0088FF' 'BBBBBB' ) doWithIndex: [ :hexString :n | 
+		c64Palette at: n - 1 put: (Color fromHexString: hexString) ].
 
 	pico8Palette := Dictionary new.
-	pico8Palette at: 0 put: Color black.
-	pico8Palette at: 1 put: (Color fromHexString: '1D2B53').
-	pico8Palette at: 2 put: (Color fromHexString: '7E2553').
-	pico8Palette at: 3 put: (Color fromHexString: '008751').
-	pico8Palette at: 4 put: (Color fromHexString: 'AB5236').
-	pico8Palette at: 5 put: (Color fromHexString: '5F574F').
-	pico8Palette at: 6 put: (Color fromHexString: 'C2C3C7').
-	pico8Palette at: 7 put: (Color fromHexString: 'FFF1E8').
-	pico8Palette at: 8 put: (Color fromHexString: 'FF004D').
-	pico8Palette at: 9 put: (Color fromHexString: 'FFA300').
-	pico8Palette at: 10 put: (Color fromHexString: 'FFEC27').
-	pico8Palette at: 11 put: (Color fromHexString: '00E436').
-	pico8Palette at: 12 put: (Color fromHexString: '29ADFF').
-	pico8Palette at: 13 put: (Color fromHexString: '83769C').
-	pico8Palette at: 14 put: (Color fromHexString: 'FF77A8').
-	pico8Palette at: 15 put: (Color fromHexString: 'FFCCAA')
+	#( '000000' '1D2B53' '7E2553' '008751' 'AB5236' '5F574F' 'C2C3C7'
+	   'FFF1E8' 'FF004D' 'FFA300' 'FFEC27' '00E436' '29ADFF' '83769C'
+	   'FF77A8' 'FFCCAA' ) doWithIndex: [ :hexString :n | 
+		pico8Palette at: n - 1 put: (Color fromHexString: hexString) ]
 ]
 
 { #category : #displaying }
