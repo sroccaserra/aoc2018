@@ -43,7 +43,7 @@ AoC2018Day15 >> playGameTurn [
 		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: pos ] ].
 
 	nextPos := unitsToMove first.
-	nextUnit := elves at: nextPos ifAbsent: (goblins at: nextPos ifAbsent: nil).
+	nextUnit := elves at: nextPos ifAbsent: [ goblins at: nextPos ].
 	possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
 		                   (grid freeNeighborsAt: enemy position) reject: [ 
 			                   :pos | 
