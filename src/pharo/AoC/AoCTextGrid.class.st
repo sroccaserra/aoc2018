@@ -96,6 +96,12 @@ AoCTextGrid >> initialize [
 	dict := Dictionary new.
 ]
 
+{ #category : #accessing }
+AoCTextGrid >> isWall: aPoint [
+
+	^ (dict at: aPoint) = $#
+]
+
 { #category : #enumerating }
 AoCTextGrid >> positionsDo: aBlock [
 

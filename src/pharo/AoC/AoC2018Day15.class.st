@@ -23,14 +23,32 @@ AoC2018Day15 >> initialize [
 	markers := Set new.
 ]
 
-{ #category : #accessing }
+{ #category : #showing }
 AoC2018Day15 >> lookAt: aPoint [
 
 	(elves includesKey: aPoint) ifTrue: [ ^ #elf ].
 	(goblins includesKey: aPoint) ifTrue: [ ^ #goblin ].
-	^ (grid charAt: aPoint) = $#
+	^ (grid isWall: aPoint)
 		  ifTrue: [ ^ #wall ]
 		  ifFalse: [ ^ #ground ]
+]
+
+{ #category : #solving }
+AoC2018Day15 >> playGameTurn [
+
+	| nextPos unitsToMove nextUnit |
+	unitsToMove := OrderedCollection new.
+	grid positionsDo: [ :pos | 
+		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: pos ].
+		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: pos ] ].
+
+	nextPos := unitsToMove first.
+	nextUnit := elves at: nextPos ifAbsent: (goblins at: nextPos).
+	markers add: nextPos.
+	nextUnit enemies do: [ :unit | 
+		markers addAll:
+			((grid freeNeighborsAt: unit position) reject: [ :pos | 
+				 unitsToMove includes: pos ]) ]
 ]
 
 { #category : #running }
@@ -64,11 +82,11 @@ AoC2018Day15 >> show [
 
 	markerTile := AoCGraphics markerForm.
 
-	tiles := Dictionary new.
-	tiles at: #wall put: wallTile.
-	tiles at: #ground put: groundTile.
-	tiles at: #elf put: elfTile.
-	tiles at: #goblin put: goblinTile.
+	tiles := Dictionary newFrom: { 
+			         (#wall -> wallTile).
+			         (#ground -> groundTile).
+			         (#elf -> elfTile).
+			         (#goblin -> goblinTile) }.
 
 	frame := Form extent: grid w * 8 @ (grid h * 8) depth: 32.
 	canvas := frame getCanvas.
@@ -89,24 +107,11 @@ AoC2018Day15 >> show [
 { #category : #solving }
 AoC2018Day15 >> solve [
 
-	| unitsToMove nextUnit nextPos |
 	self startGame.
-
-	unitsToMove := OrderedCollection new.
-	grid positionsDo: [ :pos | 
-		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: pos ].
-		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: pos ] ].
-
-	nextPos := unitsToMove first.
-	nextUnit := elves at: nextPos ifAbsent: (goblins at: nextPos).
-	markers add: nextPos.
-	nextUnit enemies do: [ :unit | 
-		markers addAll:
-			((grid freeNeighborsAt: unit position) reject: [ :pos | 
-				 unitsToMove includes: pos ]) ]
+	self playGameTurn
 ]
 
-{ #category : #running }
+{ #category : #solving }
 AoC2018Day15 >> startGame [
 
 	elves := Dictionary new.
