@@ -47,7 +47,7 @@ AoCGraphics class >> markerForm [
 	| w h form y bitRows color transparentColor |
 	h := 8.
 	w := 8.
-	color := Color red.
+	color := Color yellow.
 	transparentColor := Color
 		                    r: 0
 		                    g: 0

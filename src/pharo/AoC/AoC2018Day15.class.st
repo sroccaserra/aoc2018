@@ -68,19 +68,22 @@ AoC2018Day15 >> run: filename [
 AoC2018Day15 >> show [
 
 	| graphics forms frame canvas markerForm |
+"
+AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
+"
 	graphics := Dictionary newFrom: { 
 			            (#wall
 			             ->
-			             '[gfx]0808999999999aaaaaa49a4444429422222299999999aaa49aaa44429a4422229422[/gfx]').
+			             '[gfx]0808555555555666666d56ddddd25d22222255555555666d5666ddd256dd22225d22[/gfx]').
 			            (#ground
 			             ->
-			             '[gfx]0808222222222222222222222222222222222222d222222222222222222222222222[/gfx]').
+			             '[gfx]0808111111111111111111111111111111111111d111111111111111111111111111[/gfx]').
 			            (#elf
 			             ->
-			             '[gfx]08082222222222244222224fff22224ff222fcccccf2226662222262622226626622[/gfx]').
+			             '[gfx]0808111811111188811111afff1111aff111f78787f1118881111181811114414411[/gfx]').
 			            (#goblin
 			             ->
-			             '[gfx]0808222222222b222b2222bbb222b22b22b22bbbbb2222bbb2222b222b222b222b22[/gfx]') }.
+			             '[gfx]0808111111111b111b1111bbb111b11b11b11bbbbb1111bbb1111b111b111b111b11[/gfx]') }.
 
 	forms := graphics collect: [ :str | 
 		         AoCGraphics pico8StringToForm: str ].
