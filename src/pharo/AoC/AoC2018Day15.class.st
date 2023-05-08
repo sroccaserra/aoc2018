@@ -21,7 +21,7 @@ Class {
 { #category : #solving }
 AoC2018Day15 >> findUnit: aUnit closestTargetFrom: targets [
 
-	| unitPosition q distances node d neighbors |
+	| unitPosition q distances node d neighbors parents |
 	unitPosition := aUnit position.
 	q := WaitfreeQueue new
 		     nextPut: unitPosition;
@@ -29,17 +29,21 @@ AoC2018Day15 >> findUnit: aUnit closestTargetFrom: targets [
 	distances := Dictionary new
 		             at: unitPosition put: 0;
 		             yourself.
+	parents := Dictionary new.
 	[ q isEmpty ] whileFalse: [ 
 		node := q nextOrNil.
 		d := distances at: node.
 		neighbors := (self freeNeighborsAt: node) reject: [ :n | 
 			             distances includesKey: n ].
 		neighbors do: [ :n | 
+			parents at: n put: node.
+			distances at: n put: d + 1.
 			(targets includes: n)
-				ifTrue: [ ^ n ]
-				ifFalse: [ 
-					distances at: n put: d + 1.
-					q nextPut: n ] ] ]
+				ifTrue: [ 
+					^ { 
+						  n.
+						  parents } ]
+				ifFalse: [ q nextPut: n ] ] ]
 ]
 
 { #category : #solving }
@@ -93,7 +97,7 @@ AoC2018Day15 >> lookAt: aPoint [
 { #category : #solving }
 AoC2018Day15 >> playGameTurn [
 
-	| nextPos unitsToMove nextUnit possibleTargets |
+	| nextPos unitsToMove nextUnit possibleTargets x parents parent |
 	unitsToMove := OrderedCollection new.
 	grid positionsDo: [ :pos | 
 		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: pos ].
@@ -104,10 +108,15 @@ AoC2018Day15 >> playGameTurn [
 	possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
 		                   self freeNeighborsAt: enemy position ].
 
-	markers add:
-		(self findUnit: nextUnit closestTargetFrom: possibleTargets).
+	x := self findUnit: nextUnit closestTargetFrom: possibleTargets.
 
-	markers add: nextPos
+	markers add: nextPos.
+	markers add: x first.
+	parents := x last.
+	parent := x first.
+	[ parent isNil ] whileFalse: [ 
+		markers add: parent.
+		parent := parents at: parent ifAbsent: nil ]
 ]
 
 { #category : #running }
@@ -155,7 +164,7 @@ AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 AoC2018Day15 >> solve [
 
 	self startGame.
-	self playGameTurn
+	^ self playGameTurn
 ]
 
 { #category : #solving }
