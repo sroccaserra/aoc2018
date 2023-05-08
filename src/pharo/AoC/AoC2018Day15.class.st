@@ -95,7 +95,7 @@ AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 	forms := self graphics collect: [ :str | 
 		         AoCGraphics pico8StringToForm: str ].
 
-	frame := Form extent: grid w * 8 @ (grid h * 8) depth: 32.
+	frame := Form extent: 8 * (grid w @ grid h) depth: 32.
 	canvas := frame getCanvas.
 	grid positionsDo: [ :pos | 
 		canvas
