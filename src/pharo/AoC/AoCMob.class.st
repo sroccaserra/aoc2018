@@ -7,10 +7,23 @@ Class {
 	#instVars : [
 		'position',
 		'hitPoints',
-		'attackPower'
+		'attackPower',
+		'enemies'
 	],
 	#category : #'AoC-2018'
 }
+
+{ #category : #accessing }
+AoCMob >> enemies [
+
+	^ enemies
+]
+
+{ #category : #accessing }
+AoCMob >> enemies: aDictionary [
+
+	enemies := aDictionary
+]
 
 { #category : #initialization }
 AoCMob >> initialize [

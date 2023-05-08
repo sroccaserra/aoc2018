@@ -42,11 +42,17 @@ AoC2018Day15 >> run: filename [
 	goblins := Dictionary new.
 
 	elfPositions do: [ :pos | 
-		elves at: pos put: (Elf new position: pos yourself).
+		elves at: pos put: (Elf new
+				 position: pos;
+				 enemies: goblins;
+				 yourself).
 		grid clearAt: pos ].
 
 	goblinPositions do: [ :pos | 
-		goblins at: pos put: (Goblin new position: pos yourself).
+		goblins at: pos put: (Goblin new
+				 position: pos;
+				 enemies: elves;
+				 yourself).
 		grid clearAt: pos ].
 
 	^ self solve
@@ -88,19 +94,25 @@ AoC2018Day15 >> show [
 			at: (pos x - 1) * 8 @ ((pos y - 1) * 8)
 			sourceRect: markerTile boundingBox
 			rule: Form blend ].
-	(frame magnifyBy: 2) asMorph openInWindow
+	(frame magnifyBy: 2) asMorph openInWindowLabeled: 'AoC 2018 Day 15'
 ]
 
 { #category : #solving }
 AoC2018Day15 >> solve [
 
-	| unitsToMove |
+	| unitsToMove next nextPos |
 	unitsToMove := OrderedCollection new.
 	grid positionsDo: [ :pos | 
 		(elves includesKey: pos) ifTrue: [ 
-			unitsToMove addLast: (elves at: pos) ].
+			unitsToMove addLast: pos ].
 		(goblins includesKey: pos) ifTrue: [ 
-			unitsToMove addLast: (goblins at: pos) ] ].
+			unitsToMove addLast: pos ] ].
 
-	markers addAll: (grid freeNeighborsAt: unitsToMove first position)
+	nextPos := unitsToMove first.
+	next := elves at: nextPos ifAbsent: (goblins at: nextPos).
+	markers add: nextPos.
+	next enemies do: [ :unit | 
+		markers addAll:
+			((grid freeNeighborsAt: unit position) reject: [ :pos | 
+				 unitsToMove includes: pos ]) ]
 ]
