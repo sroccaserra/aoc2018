@@ -101,13 +101,13 @@ AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 		canvas
 			drawImage:
 			(forms at: (self lookAt: pos) ifAbsent: (forms at: #ground))
-			at: (pos x - 1) * 8 @ ((pos y - 1) * 8) ].
+			at: 8 * (pos - (1 @ 1)) ].
 
 	markerForm := AoCGraphics markerForm.
 	markers do: [ :pos | 
 		canvas
 			image: markerForm
-			at: (pos x - 1) * 8 @ ((pos y - 1) * 8)
+			at: 8 * (pos - (1 @ 1))
 			sourceRect: markerForm boundingBox
 			rule: Form blend ].
 	(frame magnifyBy: 2) asMorph openInWindowLabeled: 'AoC 2018 Day 15'
