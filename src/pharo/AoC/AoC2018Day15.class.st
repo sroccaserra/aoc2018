@@ -18,6 +18,45 @@ Class {
 	#category : #'AoC-2018'
 }
 
+{ #category : #solving }
+AoC2018Day15 >> findUnit: aUnit closestTargetFrom: targets [
+
+	| unitPosition q distances node d neighbors |
+	unitPosition := aUnit position.
+	q := WaitfreeQueue new
+		     nextPut: unitPosition;
+		     yourself.
+	distances := Dictionary new
+		             at: unitPosition put: 0;
+		             yourself.
+	[ q isEmpty ] whileFalse: [ 
+		node := q nextOrNil.
+		d := distances at: node.
+		neighbors := (self freeNeighborsAt: node) reject: [ :n | 
+			             distances includesKey: n ].
+		neighbors do: [ :n | 
+			(targets includes: n)
+				ifTrue: [ ^ n ]
+				ifFalse: [ 
+					distances at: n put: d + 1.
+					q nextPut: n ] ] ]
+]
+
+{ #category : #solving }
+AoC2018Day15 >> freeNeighborsAt: aPoint [
+
+	| orderedIncrements neighbors |
+	orderedIncrements := { 
+		                     (0 @ -1).
+		                     (-1 @ 0).
+		                     (1 @ 0).
+		                     (0 @ 1) }.
+	neighbors := orderedIncrements collect: [ :inc | aPoint + inc ].
+	^ neighbors reject: [ :n | 
+		  ((grid isWall: n) or: [ elves includesKey: n ]) or: [ 
+			  goblins includesKey: n ] ]
+]
+
 { #category : #showing }
 AoC2018Day15 >> graphics [
 
@@ -63,13 +102,12 @@ AoC2018Day15 >> playGameTurn [
 	nextPos := unitsToMove first.
 	nextUnit := elves at: nextPos ifAbsent: [ goblins at: nextPos ].
 	possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
-		                   (grid freeNeighborsAt: enemy position) reject: [ 
-			                   :pos | 
-			                   (elves includesKey: pos) or:
-				                   (goblins includesKey: pos) ] ].
+		                   self freeNeighborsAt: enemy position ].
 
-	markers add: nextPos.
-	markers addAll: possibleTargets
+	markers add:
+		(self findUnit: nextUnit closestTargetFrom: possibleTargets).
+
+	markers add: nextPos
 ]
 
 { #category : #running }
