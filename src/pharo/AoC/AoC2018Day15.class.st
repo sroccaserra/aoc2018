@@ -36,19 +36,22 @@ AoC2018Day15 >> lookAt: aPoint [
 { #category : #solving }
 AoC2018Day15 >> playGameTurn [
 
-	| nextPos unitsToMove nextUnit |
+	| nextPos unitsToMove nextUnit possibleTargets |
 	unitsToMove := OrderedCollection new.
 	grid positionsDo: [ :pos | 
 		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: pos ].
 		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: pos ] ].
 
 	nextPos := unitsToMove first.
-	nextUnit := elves at: nextPos ifAbsent: (goblins at: nextPos).
+	nextUnit := elves at: nextPos ifAbsent: (goblins at: nextPos ifAbsent: nil).
+	possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
+		                   (grid freeNeighborsAt: enemy position) reject: [ 
+			                   :pos | 
+			                   (elves includesKey: pos) or:
+				                   (goblins includesKey: pos) ] ].
+
 	markers add: nextPos.
-	nextUnit enemies do: [ :unit | 
-		markers addAll:
-			((grid freeNeighborsAt: unit position) reject: [ :pos | 
-				 unitsToMove includes: pos ]) ]
+	markers addAll: possibleTargets
 ]
 
 { #category : #running }
