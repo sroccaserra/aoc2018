@@ -11,49 +11,37 @@ Class {
 		'grid',
 		'elves',
 		'goblins',
-		'markers'
+		'markers',
+		'elfStartPositions',
+		'goblinStartPositions'
 	],
 	#category : #'AoC-2018'
 }
-
-{ #category : #accessing }
-AoC2018Day15 >> charAt: aPoint [
-
-	(elves includesKey: aPoint) ifTrue: [ ^ $E ].
-	(goblins includesKey: aPoint) ifTrue: [ ^ $G ].
-	^ grid charAt: aPoint
-]
 
 { #category : #initialization }
 AoC2018Day15 >> initialize [
 	markers := Set new.
 ]
 
+{ #category : #accessing }
+AoC2018Day15 >> lookAt: aPoint [
+
+	(elves includesKey: aPoint) ifTrue: [ ^ #elf ].
+	(goblins includesKey: aPoint) ifTrue: [ ^ #goblin ].
+	^ (grid charAt: aPoint) = $#
+		  ifTrue: [ ^ #wall ]
+		  ifFalse: [ ^ #ground ]
+]
+
 { #category : #running }
 AoC2018Day15 >> run: filename [
 
-	| lines elfPositions goblinPositions |
+	| lines |
 	lines := self loadLines: filename.
 	grid := AoCTextGrid fromLines: lines.
-	elfPositions := grid findChar: $E.
-	goblinPositions := grid findChar: $G.
-
-	elves := Dictionary new.
-	goblins := Dictionary new.
-
-	elfPositions do: [ :pos | 
-		elves at: pos put: (Elf new
-				 position: pos;
-				 enemies: goblins;
-				 yourself).
-		grid clearAt: pos ].
-
-	goblinPositions do: [ :pos | 
-		goblins at: pos put: (Goblin new
-				 position: pos;
-				 enemies: elves;
-				 yourself).
-		grid clearAt: pos ].
+	elfStartPositions := grid findChar: $E.
+	goblinStartPositions := grid findChar: $G.
+	grid clearNonWallCells.
 
 	^ self solve
 ]
@@ -77,16 +65,17 @@ AoC2018Day15 >> show [
 	markerTile := AoCGraphics markerForm.
 
 	tiles := Dictionary new.
-	tiles at: $# put: wallTile.
-	tiles at: $E put: elfTile.
-	tiles at: $G put: goblinTile.
+	tiles at: #wall put: wallTile.
+	tiles at: #ground put: groundTile.
+	tiles at: #elf put: elfTile.
+	tiles at: #goblin put: goblinTile.
 
 	frame := Form extent: grid w * 8 @ (grid h * 8) depth: 32.
 	canvas := frame getCanvas.
 	1 to: grid h do: [ :i | 
 		1 to: grid w do: [ :j | 
 			canvas
-				drawImage: (tiles at: (self charAt: j @ i) ifAbsent: groundTile)
+				drawImage: (tiles at: (self lookAt: j @ i) ifAbsent: groundTile)
 				at: (j - 1) * 8 @ ((i - 1) * 8) ] ].
 	markers do: [ :pos | 
 		canvas
@@ -100,19 +89,38 @@ AoC2018Day15 >> show [
 { #category : #solving }
 AoC2018Day15 >> solve [
 
-	| unitsToMove next nextPos |
+	| unitsToMove nextUnit nextPos |
+	self startGame.
+
 	unitsToMove := OrderedCollection new.
 	grid positionsDo: [ :pos | 
-		(elves includesKey: pos) ifTrue: [ 
-			unitsToMove addLast: pos ].
-		(goblins includesKey: pos) ifTrue: [ 
-			unitsToMove addLast: pos ] ].
+		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: pos ].
+		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: pos ] ].
 
 	nextPos := unitsToMove first.
-	next := elves at: nextPos ifAbsent: (goblins at: nextPos).
+	nextUnit := elves at: nextPos ifAbsent: (goblins at: nextPos).
 	markers add: nextPos.
-	next enemies do: [ :unit | 
+	nextUnit enemies do: [ :unit | 
 		markers addAll:
 			((grid freeNeighborsAt: unit position) reject: [ :pos | 
 				 unitsToMove includes: pos ]) ]
+]
+
+{ #category : #running }
+AoC2018Day15 >> startGame [
+
+	elves := Dictionary new.
+	goblins := Dictionary new.
+
+	elfStartPositions do: [ :pos | 
+		elves at: pos put: (Elf new
+				 position: pos;
+				 enemies: goblins;
+				 yourself) ].
+
+	goblinStartPositions do: [ :pos | 
+		goblins at: pos put: (Goblin new
+				 position: pos;
+				 enemies: elves;
+				 yourself) ]
 ]

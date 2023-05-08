@@ -22,7 +22,7 @@ AoCTextGrid class >> fromLines: lines [
 	h := lines size.
 	result := self new w: w h: h.
 	lines withIndexDo: [ :line :i | 
-		line withIndexDo: [ :char :j | result at: j @ i put: char ] ].
+		line withIndexDo: [ :char :j | result at: j @ i putChar: char ] ].
 	^ result
 ]
 
@@ -36,8 +36,8 @@ AoCTextGrid >> asString [
 			  s cr ] ]
 ]
 
-{ #category : #accessing }
-AoCTextGrid >> at: aPoint put: aChar [
+{ #category : #modifying }
+AoCTextGrid >> at: aPoint putChar: aChar [
 
 	dict at: aPoint put: aChar
 ]
@@ -48,10 +48,17 @@ AoCTextGrid >> charAt: aPoint [
 	^ dict at: aPoint
 ]
 
-{ #category : #accessing }
+{ #category : #modifying }
 AoCTextGrid >> clearAt: aPoint [
 
-	self at: aPoint put: $.
+	self at: aPoint putChar: $.
+]
+
+{ #category : #modifying }
+AoCTextGrid >> clearNonWallCells [
+
+	self positionsDo: [ :pos | 
+		(self charAt: pos) = $# ifFalse: [ self at: pos putChar: $. ] ]
 ]
 
 { #category : #accessing }
