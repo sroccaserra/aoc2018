@@ -67,7 +67,7 @@ AoC2018Day15 >> run: filename [
 { #category : #showing }
 AoC2018Day15 >> show [
 
-	| graphics frame canvas markerForm tiles |
+	| graphics forms frame canvas markerForm |
 	graphics := Dictionary newFrom: { 
 			            (#wall
 			             ->
@@ -82,7 +82,7 @@ AoC2018Day15 >> show [
 			             ->
 			             '[gfx]0808222222222b222b2222bbb222b22b22b22bbbbb2222bbb2222b222b222b222b22[/gfx]') }.
 
-	tiles := graphics collect: [ :str | 
+	forms := graphics collect: [ :str | 
 		         AoCGraphics pico8StringToForm: str ].
 
 	frame := Form extent: grid w * 8 @ (grid h * 8) depth: 32.
@@ -90,7 +90,7 @@ AoC2018Day15 >> show [
 	grid positionsDo: [ :pos | 
 		canvas
 			drawImage:
-			(tiles at: (self lookAt: pos) ifAbsent: (tiles at: #ground))
+			(forms at: (self lookAt: pos) ifAbsent: (forms at: #ground))
 			at: (pos x - 1) * 8 @ ((pos y - 1) * 8) ].
 
 	markerForm := AoCGraphics markerForm.
