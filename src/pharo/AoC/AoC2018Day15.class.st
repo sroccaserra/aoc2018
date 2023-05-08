@@ -53,8 +53,8 @@ AoC2018Day15 >> freeNeighborsAt: aPoint [
 		                     (0 @ 1) }.
 	neighbors := orderedIncrements collect: [ :inc | aPoint + inc ].
 	^ neighbors reject: [ :n | 
-		  ((grid isWall: n) or: [ elves includesKey: n ]) or: [ 
-			  goblins includesKey: n ] ]
+		  (grid isWall: n) or: [ 
+			  (elves includesKey: n) or: [ goblins includesKey: n ] ] ]
 ]
 
 { #category : #showing }
