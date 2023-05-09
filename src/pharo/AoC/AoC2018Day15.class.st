@@ -18,7 +18,7 @@ Class {
 }
 
 { #category : #solving }
-AoC2018Day15 >> findUnit: aUnit closestTargetFrom: targets [
+AoC2018Day15 >> findPathFromUnit: aUnit toClosestTarget: targets [
 
 	| unitPosition q distances node d neighbors parents |
 	unitPosition := aUnit position.
@@ -38,10 +38,7 @@ AoC2018Day15 >> findUnit: aUnit closestTargetFrom: targets [
 			parents at: n put: node.
 			distances at: n put: d + 1.
 			(targets includes: n)
-				ifTrue: [ 
-					^ { 
-						  n.
-						  parents } ]
+				ifTrue: [ ^ self unwindPathFromNode: n withParents: parents ]
 				ifFalse: [ q nextPut: n ] ] ]
 ]
 
@@ -96,7 +93,7 @@ AoC2018Day15 >> lookAt: aPoint [
 { #category : #solving }
 AoC2018Day15 >> playGameTurn [
 
-	| unitsToMove nextUnit possibleTargets x parents parent |
+	| unitsToMove nextUnit possibleTargets path |
 	unitsToMove := OrderedCollection new.
 	grid positionsDo: [ :pos | 
 		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: pos ].
@@ -107,14 +104,9 @@ AoC2018Day15 >> playGameTurn [
 		possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
 			                   self freeNeighborsAt: enemy position ].
 
-		x := self findUnit: nextUnit closestTargetFrom: possibleTargets.
-
-		parents := x last.
-		parent := x first.
-		[ parent isNil ] whileFalse: [ 
-			(parents includesKey: parent) ifTrue: [ 
-				markers addLast: (AoCLineMarker from: parent to: (parents at: parent)) ].
-			parent := parents at: parent ifAbsent: nil ] ]
+		path := self findPathFromUnit: nextUnit toClosestTarget: possibleTargets.
+		1 to: path size - 1 do: [ :n | 
+		markers addLast: (AoCLineMarker from: (path at: n) to: (path at: n + 1)) ] ]
 ]
 
 { #category : #running }
@@ -174,4 +166,18 @@ AoC2018Day15 >> startGame [
 				 position: pos;
 				 enemies: elves;
 				 yourself) ]
+]
+
+{ #category : #solving }
+AoC2018Day15 >> unwindPathFromNode: aNode withParents: parentDict [
+
+	| result cursor |
+	cursor := aNode.
+	result := OrderedCollection new
+		          addLast: cursor;
+		          yourself.
+	[ parentDict includesKey: cursor ] whileTrue: [ 
+		cursor := parentDict at: cursor.
+		result addLast: cursor ].
+	^ result
 ]
