@@ -93,22 +93,22 @@ AoC2018Day15 >> lookAt: aPoint [
 { #category : #solving }
 AoC2018Day15 >> playGameTurn [
 
-	| unitsToMove nextUnit possibleTargets path |
+	| unitsToMove possibleTargets path targetInRange |
 	self resetMarkers.
 	unitsToMove := OrderedCollection new.
 	grid positionsDo: [ :pos | 
-		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: pos ].
-		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: pos ] ].
+		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: (elves at: pos) ].
+		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: (goblins at: pos) ] ].
 
-	unitsToMove do: [ :unitPosition | 
-		nextUnit := elves at: unitPosition ifAbsent: [ goblins at: unitPosition ].
-		nextUnit isInRange ifFalse: [ 
-			possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
+	unitsToMove do: [ :unit | 
+		targetInRange := unit targetInRange.
+		targetInRange ifNil: [ 
+			possibleTargets := unit enemies flatCollect: [ :enemy | 
 				                   self freeNeighborsAt: enemy position ].
 			possibleTargets isEmpty ifFalse: [ 
-				path := self findPathFromUnit: nextUnit toClosestTarget: possibleTargets.
+				path := self findPathFromUnit: unit toClosestTarget: possibleTargets.
 				path removeFirst.
-				nextUnit moveTo: path first.
+				unit moveTo: path first.
 				1 to: path size - 1 do: [ :n | 
 				markers addLast: (AoCLineMarker from: (path at: n) to: (path at: n + 1)) ] ] ] ]
 ]

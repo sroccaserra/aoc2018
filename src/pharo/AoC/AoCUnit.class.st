@@ -38,20 +38,17 @@ AoCUnit >> enemies: aDictionary [
 	enemies := aDictionary
 ]
 
+{ #category : #accessing }
+AoCUnit >> hitPoints [
+
+	^ hitPoints
+]
+
 { #category : #initialization }
 AoCUnit >> initialize [
 
 	hitPoints := 200.
 	attackPower := 3
-]
-
-{ #category : #accessing }
-AoCUnit >> isInRange [
-
-	^ (enemies includesKey: position + (0 @ -1)) or: [ 
-		  (enemies includesKey: position + (-1 @ 0)) or: [ 
-			  (enemies includesKey: position + (1 @ 0)) or: [ 
-				  enemies includesKey: position + (0 @ 1) ] ] ]
 ]
 
 { #category : #updating }
@@ -60,6 +57,16 @@ AoCUnit >> moveTo: aPoint [
 	allies removeKey: position.
 	position := aPoint.
 	allies at: position put: self
+]
+
+{ #category : #accessing }
+AoCUnit >> pointsInRange [
+
+	^ Array
+		  with: position + (0 @ -1)
+		  with: position + (-1 @ 0)
+		  with: position + (1 @ 0)
+		  with: position + (0 @ 1)
 ]
 
 { #category : #accessing }
@@ -72,4 +79,20 @@ AoCUnit >> position [
 AoCUnit >> position: aPoint [
 
 	position := aPoint
+]
+
+{ #category : #accessing }
+AoCUnit >> targetInRange [
+
+	| result minHP enemy weakestTarget |
+	minHP := 999999.
+	weakestTarget := nil.
+	result := OrderedCollection new.
+	self pointsInRange do: [ :p | 
+		(enemies includesKey: p) ifTrue: [ 
+			enemy := enemies at: p.
+			enemy hitPoints < minHP ifTrue: [ 
+				minHP := enemy hitPoints.
+				weakestTarget := enemy ] ] ].
+	^ weakestTarget
 ]
