@@ -77,7 +77,7 @@ AoC2018Day15 >> graphics [
 
 { #category : #initialization }
 AoC2018Day15 >> initialize [
-	markers := OrderedCollection new.
+	self resetMarkers
 ]
 
 { #category : #showing }
@@ -94,6 +94,7 @@ AoC2018Day15 >> lookAt: aPoint [
 AoC2018Day15 >> playGameTurn [
 
 	| unitsToMove nextUnit possibleTargets path |
+	self resetMarkers.
 	unitsToMove := OrderedCollection new.
 	grid positionsDo: [ :pos | 
 		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: pos ].
@@ -110,6 +111,11 @@ AoC2018Day15 >> playGameTurn [
 				nextUnit moveTo: path first.
 				1 to: path size - 1 do: [ :n | 
 				markers addLast: (AoCLineMarker from: (path at: n) to: (path at: n + 1)) ] ] ] ]
+]
+
+{ #category : #initialization }
+AoC2018Day15 >> resetMarkers [
+	markers := OrderedCollection new.
 ]
 
 { #category : #running }
@@ -149,6 +155,7 @@ AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 AoC2018Day15 >> solve [
 
 	self startGame.
+	self show.
 	1 to: 3 do: [ :n | 
 		self playGameTurn.
 		self show ]
