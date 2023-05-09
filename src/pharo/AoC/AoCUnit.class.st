@@ -45,6 +45,15 @@ AoCUnit >> initialize [
 	attackPower := 3
 ]
 
+{ #category : #accessing }
+AoCUnit >> isInRange [
+
+	^ (enemies includesKey: position + (0 @ -1)) or: [ 
+		  (enemies includesKey: position + (-1 @ 0)) or: [ 
+			  (enemies includesKey: position + (1 @ 0)) or: [ 
+				  enemies includesKey: position + (0 @ 1) ] ] ]
+]
+
 { #category : #updating }
 AoCUnit >> moveTo: aPoint [
 

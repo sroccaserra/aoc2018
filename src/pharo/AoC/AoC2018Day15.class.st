@@ -101,14 +101,15 @@ AoC2018Day15 >> playGameTurn [
 
 	unitsToMove do: [ :unitPosition | 
 		nextUnit := elves at: unitPosition ifAbsent: [ goblins at: unitPosition ].
-		possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
-			                   self freeNeighborsAt: enemy position ].
-
-		path := self findPathFromUnit: nextUnit toClosestTarget: possibleTargets.
-		path removeFirst.
-		nextUnit moveTo: path first.
-		1 to: path size - 1 do: [ :n | 
-		markers addLast: (AoCLineMarker from: (path at: n) to: (path at: n + 1)) ] ]
+		nextUnit isInRange ifFalse: [ 
+			possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
+				                   self freeNeighborsAt: enemy position ].
+			possibleTargets isEmpty ifFalse: [ 
+				path := self findPathFromUnit: nextUnit toClosestTarget: possibleTargets.
+				path removeFirst.
+				nextUnit moveTo: path first.
+				1 to: path size - 1 do: [ :n | 
+				markers addLast: (AoCLineMarker from: (path at: n) to: (path at: n + 1)) ] ] ] ]
 ]
 
 { #category : #running }
@@ -148,7 +149,9 @@ AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 AoC2018Day15 >> solve [
 
 	self startGame.
-	self playGameTurn
+	1 to: 3 do: [ :n | 
+		self playGameTurn.
+		self show ]
 ]
 
 { #category : #solving }
