@@ -172,12 +172,10 @@ AoC2018Day15 >> startGame [
 AoC2018Day15 >> unwindPathFromNode: aNode withParents: parentDict [
 
 	| result cursor |
+	result := OrderedCollection new.
 	cursor := aNode.
-	result := OrderedCollection new
-		          addLast: cursor;
-		          yourself.
-	[ parentDict includesKey: cursor ] whileTrue: [ 
-		cursor := parentDict at: cursor.
-		result addLast: cursor ].
+	[ cursor ] whileNotNil: [ 
+		result addLast: cursor.
+		cursor := parentDict at: cursor ifAbsent: nil ].
 	^ result
 ]
