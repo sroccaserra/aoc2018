@@ -27,7 +27,7 @@ AoCLineMarker >> drawOn: aCanvas [
 		line: 8 * from - (5 @ 4)
 		to: 8 * to - (5 @ 4)
 		width: 1
-		color: Color yellow
+		color: (Color r: 1 g: 1 b: 0 alpha: 0.25)
 ]
 
 { #category : #accessing }

@@ -96,26 +96,25 @@ AoC2018Day15 >> lookAt: aPoint [
 { #category : #solving }
 AoC2018Day15 >> playGameTurn [
 
-	| nextPos unitsToMove nextUnit possibleTargets x parents parent |
+	| unitsToMove nextUnit possibleTargets x parents parent |
 	unitsToMove := OrderedCollection new.
 	grid positionsDo: [ :pos | 
 		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: pos ].
 		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: pos ] ].
 
-	nextPos := unitsToMove at: 1.
-	nextUnit := elves at: nextPos ifAbsent: [ goblins at: nextPos ].
-	possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
-		                   self freeNeighborsAt: enemy position ].
+	unitsToMove do: [ :unitPosition | 
+		nextUnit := elves at: unitPosition ifAbsent: [ goblins at: unitPosition ].
+		possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
+			                   self freeNeighborsAt: enemy position ].
 
-	x := self findUnit: nextUnit closestTargetFrom: possibleTargets.
+		x := self findUnit: nextUnit closestTargetFrom: possibleTargets.
 
-	markers addLast: (AoCCellMarker atPoint: nextPos).
-	parents := x last.
-	parent := x first.
-	[ parent isNil ] whileFalse: [ 
-		(parents includesKey: parent) ifTrue: [ 
-			markers addLast: (AoCLineMarker from: parent to: (parents at: parent)) ].
-		parent := parents at: parent ifAbsent: nil ]
+		parents := x last.
+		parent := x first.
+		[ parent isNil ] whileFalse: [ 
+			(parents includesKey: parent) ifTrue: [ 
+				markers addLast: (AoCLineMarker from: parent to: (parents at: parent)) ].
+			parent := parents at: parent ifAbsent: nil ] ]
 ]
 
 { #category : #running }
