@@ -2,7 +2,6 @@
 Example:
 
 AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
-
 "
 Class {
 	#name : #AoC2018Day15,
@@ -70,7 +69,7 @@ AoC2018Day15 >> graphics [
 			   '[gfx]0808555555555666666d56ddddd25d22222255555555666d5666ddd256dd22225d22[/gfx]').
 			  (#ground
 			   ->
-			   '[gfx]0808111111111111111111111111111111111111d111111111111111111111111111[/gfx]').
+			   '[gfx]08081111111111111111111111111111111111111511111111111115111111111111[/gfx]').
 			  (#elf
 			   ->
 			   '[gfx]0808118811111188811111aff11111aff111f78787f1118881111181811114414411[/gfx]').
@@ -81,7 +80,7 @@ AoC2018Day15 >> graphics [
 
 { #category : #initialization }
 AoC2018Day15 >> initialize [
-	markers := Set new.
+	markers := OrderedCollection new.
 ]
 
 { #category : #showing }
@@ -103,19 +102,19 @@ AoC2018Day15 >> playGameTurn [
 		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: pos ].
 		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: pos ] ].
 
-	nextPos := unitsToMove first.
+	nextPos := unitsToMove at: 1.
 	nextUnit := elves at: nextPos ifAbsent: [ goblins at: nextPos ].
 	possibleTargets := nextUnit enemies flatCollect: [ :enemy | 
 		                   self freeNeighborsAt: enemy position ].
 
 	x := self findUnit: nextUnit closestTargetFrom: possibleTargets.
 
-	markers add: nextPos.
-	markers add: x first.
+	markers addLast: (AoCCellMarker atPoint: nextPos).
 	parents := x last.
 	parent := x first.
 	[ parent isNil ] whileFalse: [ 
-		markers add: parent.
+		(parents includesKey: parent) ifTrue: [ 
+			markers addLast: (AoCLineMarker from: parent to: (parents at: parent)) ].
 		parent := parents at: parent ifAbsent: nil ]
 ]
 
@@ -135,28 +134,20 @@ AoC2018Day15 >> run: filename [
 { #category : #showing }
 AoC2018Day15 >> show [
 
-	| forms frame canvas markerForm |
+	| forms frame canvas |
 	"
 AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 "
-	forms := self graphics collect: [ :str | 
-		         AoCGraphics pico8StringToForm: str ].
+	forms := self graphics collect: [ :str | AoCGraphics pico8StringToForm: str ].
 
 	frame := Form extent: 8 * (grid w @ grid h) depth: 32.
 	canvas := frame getCanvas.
 	grid positionsDo: [ :pos | 
 		canvas
-			drawImage:
-			(forms at: (self lookAt: pos) ifAbsent: (forms at: #ground))
+			drawImage: (forms at: (self lookAt: pos) ifAbsent: (forms at: #ground))
 			at: 8 * (pos - (1 @ 1)) ].
 
-	markerForm := AoCGraphics markerForm.
-	markers do: [ :pos | 
-		canvas
-			image: markerForm
-			at: 8 * (pos - (1 @ 1))
-			sourceRect: markerForm boundingBox
-			rule: Form blend ].
+	markers do: [ :m | m drawOn: canvas ].
 	(frame magnifyBy: 2) asMorph openInWindowLabeled: 'AoC 2018 Day 15'
 ]
 
