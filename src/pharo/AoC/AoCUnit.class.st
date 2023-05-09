@@ -32,6 +32,12 @@ AoCUnit >> attack: aUnit [
 	aUnit losesHP: attackPower.
 ]
 
+{ #category : #accessing }
+AoCUnit >> attackPower: anInteger [
+
+	attackPower := anInteger
+]
+
 { #category : #updating }
 AoCUnit >> die [
 

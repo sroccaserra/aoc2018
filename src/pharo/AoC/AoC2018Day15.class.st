@@ -152,7 +152,9 @@ AoC2018Day15 >> run: filename [
 	goblinStartPositions := grid findChar: $G.
 	grid clearNonWallCells.
 
-	^ self solve
+	^ { 
+		  self solvePartOne.
+		  self solvePartTwo }
 ]
 
 { #category : #showing }
@@ -174,7 +176,7 @@ AoC2018Day15 >> show [
 ]
 
 { #category : #solving }
-AoC2018Day15 >> solve [
+AoC2018Day15 >> solvePartOne [
 
 	| remainingHP |
 	self startGame.
@@ -185,7 +187,32 @@ AoC2018Day15 >> solve [
 ]
 
 { #category : #solving }
+AoC2018Day15 >> solvePartTwo [
+
+	"
+AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt'.
+
+"
+
+	| remainingHP |
+	4 to: 20 do: [ :elvesAttackPower | 
+		self startGame: elvesAttackPower.
+		[ self playGameRound ] whileTrue.
+		elves size = elfStartPositions size ifTrue: [ 
+			remainingHP := 0.
+			elves do: [ :e | remainingHP := remainingHP + e hitPoints ].
+			^ nbRounds * remainingHP ] ].
+	^ -1
+]
+
+{ #category : #solving }
 AoC2018Day15 >> startGame [
+
+	self startGame: 3
+]
+
+{ #category : #solving }
+AoC2018Day15 >> startGame: elvesAttackPower [
 
 	| unit |
 	nbRounds := 0.
@@ -196,6 +223,7 @@ AoC2018Day15 >> startGame [
 	elfStartPositions do: [ :pos | 
 		unit := AoCUnit new
 			        position: pos;
+			        attackPower: elvesAttackPower;
 			        allies: elves;
 			        enemies: goblins;
 			        yourself.
