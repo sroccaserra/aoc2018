@@ -12,7 +12,8 @@ Class {
 		'goblins',
 		'markers',
 		'elfStartPositions',
-		'goblinStartPositions'
+		'goblinStartPositions',
+		'nbRounds'
 	],
 	#category : #'AoC-2018'
 }
@@ -77,6 +78,7 @@ AoC2018Day15 >> graphics [
 
 { #category : #initialization }
 AoC2018Day15 >> initialize [
+   nbRounds := 0.
 	self resetMarkers
 ]
 
@@ -91,20 +93,7 @@ AoC2018Day15 >> lookAt: aPoint [
 ]
 
 { #category : #solving }
-AoC2018Day15 >> playGameTurn [
-
-	| unitsToMove |
-	self resetMarkers.
-	unitsToMove := OrderedCollection new.
-	grid positionsDo: [ :pos | 
-		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: (elves at: pos) ].
-		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: (goblins at: pos) ] ].
-
-	unitsToMove do: [ :unit | self playUnitTurn: unit ]
-]
-
-{ #category : #solving }
-AoC2018Day15 >> playUnitTurn: unit [
+AoC2018Day15 >> moveUnit: unit [
 
 	| possibleTargets path targetInRange |
 	targetInRange := unit targetInRange.
@@ -116,7 +105,31 @@ AoC2018Day15 >> playUnitTurn: unit [
 			path removeFirst.
 			unit moveTo: path first.
 			1 to: path size - 1 do: [ :n | 
-			markers addLast: (AoCLineMarker from: (path at: n) to: (path at: n + 1)) ] ] ]
+			markers addLast: (AoCLineMarker from: (path at: n) to: (path at: n + 1)) ] ] ].
+
+]
+
+{ #category : #solving }
+AoC2018Day15 >> playGameRound [
+
+	| unitsToMove |
+	self resetMarkers.
+	unitsToMove := OrderedCollection new.
+	grid positionsDo: [ :pos | 
+		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: (elves at: pos) ].
+		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: (goblins at: pos) ] ].
+
+	unitsToMove do: [ :unit | unit isAlive ifTrue: [ self playUnitTurn: unit ] ].
+	nbRounds := nbRounds + 1
+]
+
+{ #category : #solving }
+AoC2018Day15 >> playUnitTurn: unit [
+
+	| targetInRange |
+	self moveUnit: unit.
+	targetInRange := unit targetInRange.
+	targetInRange ifNotNil: [ unit attack: targetInRange ]
 ]
 
 { #category : #initialization }
@@ -154,7 +167,8 @@ AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 			at: 8 * (pos - (1 @ 1)) ].
 
 	markers do: [ :m | m drawOn: canvas ].
-	(frame magnifyBy: 2) asMorph openInWindowLabeled: 'AoC 2018 Day 15'
+	(frame magnifyBy: 2) asMorph openInWindowLabeled:
+		('AoC 2018 Day 15 round {1}' format: { nbRounds })
 ]
 
 { #category : #solving }
@@ -163,7 +177,7 @@ AoC2018Day15 >> solve [
 	self startGame.
 	self show.
 	1 to: 3 do: [ :n | 
-		self playGameTurn.
+		self playGameRound.
 		self show ]
 ]
 

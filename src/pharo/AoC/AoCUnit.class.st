@@ -26,6 +26,18 @@ AoCUnit >> allies: anObject [
 	allies := anObject
 ]
 
+{ #category : #action }
+AoCUnit >> attack: aUnit [
+
+	aUnit losesHP: attackPower.
+]
+
+{ #category : #updating }
+AoCUnit >> die [
+
+	self allies removeAt: position
+]
+
 { #category : #accessing }
 AoCUnit >> enemies [
 
@@ -49,6 +61,19 @@ AoCUnit >> initialize [
 
 	hitPoints := 200.
 	attackPower := 3
+]
+
+{ #category : #accessing }
+AoCUnit >> isAlive [
+
+	^ hitPoints > 0
+]
+
+{ #category : #updating }
+AoCUnit >> losesHP: anInteger [
+
+	hitPoints := hitPoints - anInteger.
+	hitPoints <= 0 ifTrue: [ self die ]
 ]
 
 { #category : #updating }
