@@ -105,6 +105,8 @@ AoC2018Day15 >> playGameTurn [
 			                   self freeNeighborsAt: enemy position ].
 
 		path := self findPathFromUnit: nextUnit toClosestTarget: possibleTargets.
+		path removeFirst.
+		nextUnit moveTo: path first.
 		1 to: path size - 1 do: [ :n | 
 		markers addLast: (AoCLineMarker from: (path at: n) to: (path at: n + 1)) ] ]
 ]
@@ -146,36 +148,41 @@ AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 AoC2018Day15 >> solve [
 
 	self startGame.
-	^ self playGameTurn
+	self playGameTurn
 ]
 
 { #category : #solving }
 AoC2018Day15 >> startGame [
 
+	| unit |
 	elves := Dictionary new.
 	goblins := Dictionary new.
 
 	elfStartPositions do: [ :pos | 
-		elves at: pos put: (Elf new
-				 position: pos;
-				 enemies: goblins;
-				 yourself) ].
+		unit := AoCUnit new
+			        position: pos;
+			        allies: elves;
+			        enemies: goblins;
+			        yourself.
+		elves at: pos put: unit ].
 
 	goblinStartPositions do: [ :pos | 
-		goblins at: pos put: (Goblin new
-				 position: pos;
-				 enemies: elves;
-				 yourself) ]
+		unit := AoCUnit new
+			        position: pos;
+			        allies: goblins;
+			        enemies: elves;
+			        yourself.
+		goblins at: pos put: unit ]
 ]
 
 { #category : #solving }
 AoC2018Day15 >> unwindPathFromNode: aNode withParents: parentDict [
 
 	| result cursor |
-	result := OrderedCollection new.
+	result := LinkedList new.
 	cursor := aNode.
 	[ cursor ] whileNotNil: [ 
-		result addLast: cursor.
+		result addFirst: cursor.
 		cursor := parentDict at: cursor ifAbsent: nil ].
 	^ result
 ]
