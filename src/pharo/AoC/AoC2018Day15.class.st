@@ -40,7 +40,8 @@ AoC2018Day15 >> findPathFromUnit: aUnit toClosestTarget: targets [
 			distances at: n put: d + 1.
 			(targets includes: n)
 				ifTrue: [ ^ self unwindPathFromNode: n withParents: parents ]
-				ifFalse: [ q nextPut: n ] ] ]
+				ifFalse: [ q nextPut: n ] ] ].
+	^ LinkedList new
 ]
 
 { #category : #solving }
@@ -78,7 +79,7 @@ AoC2018Day15 >> graphics [
 
 { #category : #initialization }
 AoC2018Day15 >> initialize [
-   nbRounds := 0.
+
 	self resetMarkers
 ]
 
@@ -102,11 +103,11 @@ AoC2018Day15 >> moveUnit: unit [
 			                   self freeNeighborsAt: enemy position ].
 		possibleTargets isEmpty ifFalse: [ 
 			path := self findPathFromUnit: unit toClosestTarget: possibleTargets.
-			path removeFirst.
-			unit moveTo: path first.
-			1 to: path size - 1 do: [ :n | 
-			markers addLast: (AoCLineMarker from: (path at: n) to: (path at: n + 1)) ] ] ].
-
+			path isEmpty ifFalse: [ 
+				path removeFirst.
+				unit moveTo: path first.
+				1 to: path size - 1 do: [ :n | 
+				markers addLast: (AoCLineMarker from: (path at: n) to: (path at: n + 1)) ] ] ] ]
 ]
 
 { #category : #solving }
@@ -119,8 +120,12 @@ AoC2018Day15 >> playGameRound [
 		(elves includesKey: pos) ifTrue: [ unitsToMove addLast: (elves at: pos) ].
 		(goblins includesKey: pos) ifTrue: [ unitsToMove addLast: (goblins at: pos) ] ].
 
-	unitsToMove do: [ :unit | unit isAlive ifTrue: [ self playUnitTurn: unit ] ].
-	nbRounds := nbRounds + 1
+	unitsToMove do: [ :unit | 
+		unit isAlive ifTrue: [ 
+			unit hasWon ifTrue: [ ^ false ].
+			self playUnitTurn: unit ] ].
+	nbRounds := nbRounds + 1.
+	^ true
 ]
 
 { #category : #solving }
@@ -154,9 +159,6 @@ AoC2018Day15 >> run: filename [
 AoC2018Day15 >> show [
 
 	| forms frame canvas |
-	"
-AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
-"
 	forms := self graphics collect: [ :str | AoCGraphics pico8StringToForm: str ].
 
 	frame := Form extent: 8 * (grid w @ grid h) depth: 32.
@@ -174,17 +176,20 @@ AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 { #category : #solving }
 AoC2018Day15 >> solve [
 
+	| remainingHP |
 	self startGame.
-	self show.
-	1 to: 3 do: [ :n | 
-		self playGameRound.
-		self show ]
+	[ self playGameRound ] whileTrue.
+	remainingHP := 0.
+	goblins do: [ :g | remainingHP := remainingHP + g hitPoints ].
+	^ nbRounds * remainingHP
 ]
 
 { #category : #solving }
 AoC2018Day15 >> startGame [
 
 	| unit |
+	nbRounds := 0.
+
 	elves := Dictionary new.
 	goblins := Dictionary new.
 

@@ -35,7 +35,7 @@ AoCUnit >> attack: aUnit [
 { #category : #updating }
 AoCUnit >> die [
 
-	self allies removeAt: position
+	self allies removeKey: position
 ]
 
 { #category : #accessing }
@@ -48,6 +48,12 @@ AoCUnit >> enemies [
 AoCUnit >> enemies: aDictionary [
 
 	enemies := aDictionary
+]
+
+{ #category : #accessing }
+AoCUnit >> hasWon [
+
+	^ enemies isEmpty
 ]
 
 { #category : #accessing }
