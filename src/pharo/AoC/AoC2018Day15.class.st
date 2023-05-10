@@ -178,31 +178,38 @@ AoC2018Day15 >> show [
 { #category : #solving }
 AoC2018Day15 >> solvePartOne [
 
-	| remainingHP |
-	self startGame.
+	^ self solvePartOneWithElvesAttackPower: 3
+]
+
+{ #category : #solving }
+AoC2018Day15 >> solvePartOneWithElvesAttackPower: anInteger [
+
+	| remainingHP winners |
+	self startGame: anInteger.
 	[ self playGameRound ] whileTrue.
 	remainingHP := 0.
-	goblins do: [ :g | remainingHP := remainingHP + g hitPoints ].
+	winners := goblins isEmpty
+		           ifTrue: elves
+		           ifFalse: goblins.
+	winners do: [ :unit | remainingHP := remainingHP + unit hitPoints ].
 	^ nbRounds * remainingHP
 ]
 
 { #category : #solving }
 AoC2018Day15 >> solvePartTwo [
 
-	"
-AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt'.
+	| minRequiredPower |
+	minRequiredPower := nil.
+	(4 to: 100)
+		findBinary: [ :elvesAttackPower | 
+			self solvePartOneWithElvesAttackPower: elvesAttackPower.
+			elves size = elfStartPositions size
+				ifTrue: -1
+				ifFalse: 1 ]
+		ifNone: [ :a :b | minRequiredPower := b ].
 
-"
-
-	| remainingHP |
-	4 to: 20 do: [ :elvesAttackPower | 
-		self startGame: elvesAttackPower.
-		[ self playGameRound ] whileTrue.
-		elves size = elfStartPositions size ifTrue: [ 
-			remainingHP := 0.
-			elves do: [ :e | remainingHP := remainingHP + e hitPoints ].
-			^ nbRounds * remainingHP ] ].
-	^ -1
+	[ minRequiredPower isNotNil ] assert.
+	^ self solvePartOneWithElvesAttackPower: minRequiredPower
 ]
 
 { #category : #solving }
