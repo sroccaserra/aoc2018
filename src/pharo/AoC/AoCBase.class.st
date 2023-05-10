@@ -14,3 +14,9 @@ AoCBase >> loadLines: filename [
 	file := FileSystem disk workingDirectory / filename.
 	^ file contents lines
 ]
+
+{ #category : #running }
+AoCBase >> run: filename [
+
+	self subclassResponsibility
+]
