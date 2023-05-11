@@ -213,12 +213,6 @@ AoC2018Day15 >> solvePartTwo [
 ]
 
 { #category : #solving }
-AoC2018Day15 >> startGame [
-
-	self startGame: 3
-]
-
-{ #category : #solving }
 AoC2018Day15 >> startGame: elvesAttackPower [
 
 	| unit |

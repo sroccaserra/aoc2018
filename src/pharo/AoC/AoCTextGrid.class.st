@@ -49,12 +49,6 @@ AoCTextGrid >> charAt: aPoint [
 ]
 
 { #category : #modifying }
-AoCTextGrid >> clearAt: aPoint [
-
-	self at: aPoint putChar: $.
-]
-
-{ #category : #modifying }
 AoCTextGrid >> clearNonWallCells [
 
 	self positionsDo: [ :pos | 
