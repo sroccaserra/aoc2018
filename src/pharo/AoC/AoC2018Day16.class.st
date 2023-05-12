@@ -54,5 +54,11 @@ AoC2018Day16 new run: 'Developer/github/aoc2018/src/16.txt'
 	sampleGroups := groups allButLast.
 	programLines := groups last.
 	samples := sampleGroups collect: [ :sample | self parseSample: sample ].
+	^ self solvePartOne: samples
+]
+
+{ #category : #running }
+AoC2018Day16 >> solvePartOne: samples [
+
 	^ (samples select: [ :each | each countMatching >= 3 ]) size
 ]
