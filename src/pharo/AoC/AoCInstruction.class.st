@@ -5,20 +5,20 @@ Class {
 	#name : #AoCInstruction,
 	#superclass : #Object,
 	#instVars : [
-		'opcode',
 		'a',
 		'b',
 		'c',
-		'implementation'
+		'implementation',
+		'opNumber'
 	],
 	#category : #'AoC-2018'
 }
 
 { #category : #'instance creation' }
-AoCInstruction class >> fromNumbers: fourNumbers [
+AoCInstruction class >> fromFourNumbers: fourNumbers [
 
 	^ self new
-		  opcode: fourNumbers first;
+		  opNumber: fourNumbers first;
 		  a: fourNumbers second;
 		  b: fourNumbers third;
 		  c: fourNumbers fourth;
@@ -157,7 +157,13 @@ AoCInstruction >> implementation: aBloc [
 ]
 
 { #category : #accessing }
-AoCInstruction >> opcode: aNumber [
+AoCInstruction >> opNumber [
 
-	opcode := aNumber
+	^ opNumber
+]
+
+{ #category : #accessing }
+AoCInstruction >> opNumber: aNumber [
+
+	opNumber := aNumber
 ]

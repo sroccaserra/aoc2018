@@ -47,3 +47,9 @@ AoCSample >> matches: anImplementation [
 		executeOn: state.
 	^ state values = after
 ]
+
+{ #category : #accessing }
+AoCSample >> opNumber [
+
+	^ instruction opNumber
+]
