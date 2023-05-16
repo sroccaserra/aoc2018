@@ -27,17 +27,23 @@ AoCSample >> before: fourNumbers [
 { #category : #counting }
 AoCSample >> countMatching [
 
-	| results |
-	results := AoCInstruction ops values collect: [ :each | 
-		           instruction
-			           implementation: each;
-			           executeOn: (AoCState fromFourNumbers: before) ].
-	^ ((results collect: [ :each | each values ]) select: [ :each | each = after ])
-		  size
+	^ AoCInstruction ops values count: [ :implementation | 
+		  self matches: implementation ]
 ]
 
 { #category : #accessing }
-AoCSample >> instruction: fourNumbers [
+AoCSample >> instruction: anInstruction [
 
-	instruction := fourNumbers
+	instruction := anInstruction
+]
+
+{ #category : #counting }
+AoCSample >> matches: anImplementation [
+
+	| state |
+	state := AoCState fromFourNumbers: before.
+	instruction
+		implementation: anImplementation;
+		executeOn: state.
+	^ state values = after
 ]
