@@ -1,11 +1,10 @@
 "
-Example:
+AoC2018Day15 ! 'Developer/github/aoc2018/src/15.txt'
 
-AoC2018Day15 new run: 'Developer/github/aoc2018/src/15.txt' ; show.
 "
 Class {
 	#name : #AoC2018Day15,
-	#superclass : #AoCBase,
+	#superclass : #AoCVisualBase,
 	#instVars : [
 		'grid',
 		'elves',

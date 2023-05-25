@@ -7,7 +7,7 @@ Class {
 	#category : #'AoC-Base'
 }
 
-{ #category : #arithmetic }
+{ #category : #running }
 AoCBase class >> * filename [
 
 	^ self new run: filename

@@ -1,7 +1,6 @@
 "
-Example:
+AoC2018Day16 * 'Developer/github/aoc2018/src/16.txt'
 
-AoC2018Day16 * 'Developer/github/aoc2018/src/16.txt'.
 "
 Class {
 	#name : #AoC2018Day16,
