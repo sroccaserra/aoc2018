@@ -1,7 +1,7 @@
 "
 Example:
 
-AoC2018Day16 new run: 'Developer/github/aoc2018/src/16.txt'.
+AoC2018Day16 * 'Developer/github/aoc2018/src/16.txt'.
 "
 Class {
 	#name : #AoC2018Day16,
@@ -120,5 +120,5 @@ AoC2018Day16 >> solvePartTwo: samples [
 			(aSample matches: each value) ifTrue: [ 
 				(matches at: each key) at: aSample opNumber put: true ] ] ].
 	numberOpCodes := self findNumberOpCodes: matches.
-	^ self runProgram at: 0.
+	^ self runProgram at: 0
 ]

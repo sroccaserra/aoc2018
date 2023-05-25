@@ -7,6 +7,12 @@ Class {
 	#category : #'AoC-Base'
 }
 
+{ #category : #arithmetic }
+AoCBase class >> * filename [
+
+	^ self new run: filename
+]
+
 { #category : #running }
 AoCBase >> loadLines: filename [
 
