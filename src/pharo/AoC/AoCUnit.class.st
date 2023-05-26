@@ -121,12 +121,13 @@ AoCUnit >> position: aPoint [
 { #category : #accessing }
 AoCUnit >> targetInRange [
 
-	| result minHP enemy weakestTarget |
+	| result minHP weakestTarget |
 	minHP := 999999.
 	weakestTarget := nil.
 	result := OrderedCollection new.
 	self pointsInRange do: [ :p | 
 		(enemies includesKey: p) ifTrue: [ 
+			| enemy |
 			enemy := enemies at: p.
 			enemy hitPoints < minHP ifTrue: [ 
 				minHP := enemy hitPoints.

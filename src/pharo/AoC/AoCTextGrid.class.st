@@ -9,7 +9,8 @@ Class {
 	#instVars : [
 		'dict',
 		'w',
-		'h'
+		'h',
+		'origin'
 	],
 	#category : #'AoC-Base'
 }
@@ -26,6 +27,21 @@ AoCTextGrid class >> fromLines: lines [
 	^ result
 ]
 
+{ #category : #'instance creation' }
+AoCTextGrid class >> fromPoints: somePoints [
+
+	| w h result xs ys origin margin |
+	margin := 1.
+	xs := somePoints collect: [ :each | each x ].
+	ys := somePoints collect: [ :each | each y ].
+	w := 1 + xs max - xs min + (margin * 2).
+	h := 1 + ys max - ys min + (margin * 2).
+	origin := xs min @ ys min - (margin @ margin).
+	result := self new w: w h: h origin: origin.
+	somePoints do: [ :aPoint | result at: aPoint x @ aPoint y putChar: $# ].
+	^ result
+]
+
 { #category : #converting }
 AoCTextGrid >> asString [
 
@@ -37,6 +53,12 @@ AoCTextGrid >> asString [
 ]
 
 { #category : #modifying }
+AoCTextGrid >> at: aPoint ifAbsent: aValue [
+
+	dict at: aPoint ifAbsent: aValue
+]
+
+{ #category : #modifying }
 AoCTextGrid >> at: aPoint putChar: aChar [
 
 	dict at: aPoint put: aChar
@@ -45,7 +67,7 @@ AoCTextGrid >> at: aPoint putChar: aChar [
 { #category : #accessing }
 AoCTextGrid >> charAt: aPoint [
 
-	^ dict at: aPoint
+	^ dict at: aPoint ifAbsent: $.
 ]
 
 { #category : #modifying }
@@ -87,13 +109,28 @@ AoCTextGrid >> h [
 { #category : #initialization }
 AoCTextGrid >> initialize [
 
-	dict := Dictionary new.
+	dict := Dictionary new
 ]
 
 { #category : #accessing }
 AoCTextGrid >> isWall: aPoint [
 
 	^ (dict at: aPoint) = $#
+]
+
+{ #category : #accessing }
+AoCTextGrid >> origin [
+
+	^ origin
+]
+
+{ #category : #enumerating }
+AoCTextGrid >> positions [
+
+	| result |
+	result := OrderedCollection new.
+	1 to: h do: [ :i | 1 to: w do: [ :j | result add: j @ i ] ].
+	^ result
 ]
 
 { #category : #enumerating }
@@ -111,6 +148,13 @@ AoCTextGrid >> w [
 { #category : #initialization }
 AoCTextGrid >> w: wNumber h: hNumber [
 
+	self w: wNumber h: hNumber origin: 1 @ 1
+]
+
+{ #category : #initialization }
+AoCTextGrid >> w: wNumber h: hNumber origin: aPoint [
+
 	w := wNumber.
-	h := hNumber
+	h := hNumber.
+	origin := aPoint
 ]

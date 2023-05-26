@@ -15,12 +15,14 @@ Class {
 { #category : #running }
 AoC2018Day16 >> findNumberOpCodes: matches [
 
-	| found justFound opNumber |
+	| found |
 	found := Dictionary new.
 	[ found keys size = matches keys size ] whileFalse: [ 
+		| justFound |
 		justFound := OrderedCollection new.
 		matches associationsDo: [ :each | 
 			each value size = 1 ifTrue: [ 
+				| opNumber |
 				opNumber := each value keys first.
 				justFound addLast: opNumber.
 				found at: opNumber put: each key ] ].
@@ -92,9 +94,10 @@ AoC2018Day16 new run: 'Developer/github/aoc2018/src/16.txt'
 { #category : #running }
 AoC2018Day16 >> runProgram [
 
-	| state instruction |
+	| state |
 	state := AoCState new.
 	program do: [ :each | 
+		| instruction |
 		instruction := AoCInstruction fromFourNumbers: each.
 		instruction implementation:
 			(AoCInstruction ops at: (numberOpCodes at: each first)).

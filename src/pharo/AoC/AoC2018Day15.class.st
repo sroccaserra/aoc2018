@@ -95,12 +95,14 @@ AoC2018Day15 >> lookAt: aPoint [
 { #category : #solving }
 AoC2018Day15 >> moveUnit: unit [
 
-	| possibleTargets path targetInRange |
+	| targetInRange |
 	targetInRange := unit targetInRange.
 	targetInRange ifNil: [ 
+		| possibleTargets |
 		possibleTargets := unit enemies flatCollect: [ :enemy | 
 			                   self freeNeighborsAt: enemy position ].
 		possibleTargets isEmpty ifFalse: [ 
+			| path |
 			path := self findPathFromUnit: unit toClosestTarget: possibleTargets.
 			path isEmpty ifFalse: [ 
 				path removeFirst.
@@ -214,13 +216,12 @@ AoC2018Day15 >> solvePartTwo [
 { #category : #solving }
 AoC2018Day15 >> startGame: elvesAttackPower [
 
-	| unit |
 	nbRounds := 0.
-
 	elves := Dictionary new.
 	goblins := Dictionary new.
 
 	elfStartPositions do: [ :pos | 
+		| unit |
 		unit := AoCUnit new
 			        position: pos;
 			        attackPower: elvesAttackPower;
@@ -230,6 +231,7 @@ AoC2018Day15 >> startGame: elvesAttackPower [
 		elves at: pos put: unit ].
 
 	goblinStartPositions do: [ :pos | 
+		| unit |
 		unit := AoCUnit new
 			        position: pos;
 			        allies: goblins;
