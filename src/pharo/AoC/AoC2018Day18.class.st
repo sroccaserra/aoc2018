@@ -88,7 +88,7 @@ AoC2018Day18 >> solvePartOne [
 { #category : #running }
 AoC2018Day18 >> solvePartTwo [
 
-	| dictsSequence nbTrees nbLumberyards n target cycleStart cycleSize targetIndex |
+	| dictsSequence n target cycleStart cycleSize targetIndex |
 	target := 1000000000.
 	n := 0.
 	dictsSequence := OrderedCollection new.
@@ -97,13 +97,6 @@ AoC2018Day18 >> solvePartTwo [
 		grid := self step.
 		n := n + 1 ].
 
-	nbTrees := 0.
-	nbLumberyards := 0.
-	grid positionsDo: [ :pos |
-		| c |
-		c := grid charAt: pos.
-		c = $| ifTrue: [ nbTrees := nbTrees + 1 ].
-		c = $# ifTrue: [ nbLumberyards := nbLumberyards + 1 ] ].
 	cycleStart := dictsSequence indexOf: grid dict.
 	cycleSize := dictsSequence size - cycleStart + 1.
 	targetIndex := target - cycleStart % cycleSize + cycleStart + 1.
