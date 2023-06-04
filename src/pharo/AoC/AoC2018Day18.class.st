@@ -29,12 +29,32 @@ AoC2018Day18 class >> treesGraphics [
 ]
 
 { #category : #running }
+AoC2018Day18 >> countResult [
+
+	| nbTrees nbLumberyards |
+	nbTrees := 0.
+	nbLumberyards := 0.
+	grid positionsDo: [ :pos |
+		| c |
+		c := grid charAt: pos.
+		c = $| ifTrue: [ nbTrees := nbTrees + 1 ].
+		c = $# ifTrue: [ nbLumberyards := nbLumberyards + 1 ] ].
+	^ nbTrees * nbLumberyards
+]
+
+{ #category : #running }
 AoC2018Day18 >> run: filename [
 
-	| lines |
+	| lines startDict partOne partTwo |
 	lines := self loadLines: filename.
 	grid := AoCTextGrid fromLines: lines.
-	^ self solvePartOne
+	startDict := grid dict copy.
+	partOne := self solvePartOne.
+	grid dict: startDict.
+	partTwo := self solvePartTwo.
+	^ {
+		  partOne.
+		  partTwo }
 ]
 
 { #category : #showing }
@@ -60,8 +80,23 @@ AoC2018Day18 >> show [
 { #category : #running }
 AoC2018Day18 >> solvePartOne [
 
-	| nbTrees nbLumberyards |
-	1 to: 10 do: [ :_ | grid := self step ].
+	10 timesRepeat: [ grid := self step ].
+
+	^ self countResult
+]
+
+{ #category : #running }
+AoC2018Day18 >> solvePartTwo [
+
+	| dictsSequence nbTrees nbLumberyards n target cycleStart cycleSize targetIndex |
+	target := 1000000000.
+	n := 0.
+	dictsSequence := OrderedCollection new.
+	[ dictsSequence includes: grid dict ] whileFalse: [
+		dictsSequence add: grid dict.
+		grid := self step.
+		n := n + 1 ].
+
 	nbTrees := 0.
 	nbLumberyards := 0.
 	grid positionsDo: [ :pos |
@@ -69,7 +104,11 @@ AoC2018Day18 >> solvePartOne [
 		c := grid charAt: pos.
 		c = $| ifTrue: [ nbTrees := nbTrees + 1 ].
 		c = $# ifTrue: [ nbLumberyards := nbLumberyards + 1 ] ].
-	^ nbTrees * nbLumberyards
+	cycleStart := dictsSequence indexOf: grid dict.
+	cycleSize := dictsSequence size - cycleStart + 1.
+	targetIndex := target - cycleStart % cycleSize + cycleStart + 1.
+	grid dict: (dictsSequence at: targetIndex).
+	^ self countResult
 ]
 
 { #category : #running }

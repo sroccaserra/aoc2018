@@ -86,6 +86,18 @@ AoCTextGrid >> clearNonWallCells [
 ]
 
 { #category : #accessing }
+AoCTextGrid >> dict [
+
+	^ dict
+]
+
+{ #category : #accessing }
+AoCTextGrid >> dict: aDict [
+
+	dict := aDict
+]
+
+{ #category : #accessing }
 AoCTextGrid >> eightNeighborsAt: aPoint [
 
 	^ aPoint eightNeighbors collect: [ :n | self charAt: n ]
