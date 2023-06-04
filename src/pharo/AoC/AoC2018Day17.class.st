@@ -8,7 +8,11 @@ Class {
 	#instVars : [
 		'grid',
 		'wallPoints',
-		'springPos'
+		'springPos',
+		'bottom',
+		'debug',
+		'known',
+		'top'
 	],
 	#category : #'AoC-2018'
 }
@@ -43,21 +47,53 @@ AoC2018Day17 class >> waterPassedGraphics [
 	^ '[gfx]0808115111151111511111c111c5c1151c1111111111151c15111111111c1c11c111[/gfx]'
 ]
 
-{ #category : #running }
-AoC2018Day17 >> canPass: aPoint [
-
-	^ (grid charAt: aPoint) = $.
-]
-
-{ #category : #running }
+{ #category : #solving }
 AoC2018Day17 >> dropWaterFrom: aPoint [
 
-	| nextPoint |
-	nextPoint := aPoint.
-	[ 
-	nextPoint := nextPoint + (0 @ 1).
-	self canPass: nextPoint ] whileTrue: [ grid at: nextPoint putChar: $| ].
-	^ nextPoint - (0 @ 1)
+	| waterPos nextDown overflows |
+	nextDown := aPoint + (0 @ 1).
+	[ self isFreeAt: nextDown ] whileTrue: [
+		nextDown y > bottom ifTrue: [ ^ Association key: #oob value: #(  ) ].
+		waterPos := nextDown.
+		grid at: nextDown putChar: $|.
+		nextDown := nextDown + (0 @ 1) ].
+	waterPos ifNil: [
+		^ Association key: #overflowing value: { (aPoint + (0 @ -1)) } ].
+	overflows := self runWaterLineFrom: waterPos.
+	overflows ifEmpty: [ ^ Association key: #filling value: #(  ) ].
+	^ Association key: #overflowing value: overflows
+]
+
+{ #category : #solving }
+AoC2018Day17 >> fillWaterFrom: aPoint [
+
+	| dropResult overflows |
+	(known includes: aPoint) ifTrue: [ ^ nil ].
+	known add: aPoint.
+	dropResult := Association key: #filling value: { aPoint }.
+	[ dropResult key = #filling ] whileTrue: [
+		dropResult := self dropWaterFrom: aPoint ].
+
+	overflows := dropResult value.
+	overflows do: [ :each | self fillWaterFrom: each ]
+]
+
+{ #category : #solving }
+AoC2018Day17 >> flowFrom: aPoint by: aNumber [
+
+	| flow next down status |
+	next := aPoint.
+	status := #flowing.
+
+	[ status = #flowing ] whileTrue: [
+		flow := next.
+		grid at: flow putChar: $|.
+		next := flow + (aNumber @ 0).
+		down := flow + (0 @ 1).
+		(self isFreeAt: down)
+			ifTrue: [ status := #falling ]
+			ifFalse: [ (self isFreeAt: next) ifFalse: [ status := #blocked ] ] ].
+	^ Association key: status value: flow
 ]
 
 { #category : #running }
@@ -128,15 +164,48 @@ AoC2018Day17 >> run: filename [
 
 	| lines |
 	lines := self loadLines: filename.
-	wallPoints := lines flatCollect: [ :each | self parseWallPoints: each ].
-	wallPoints := (OrderedCollection newFrom: wallPoints)
-		              addLast: 500 @ 0;
-		              yourself.
+	wallPoints := lines flatCollect: [ :each |
+		              self parseWallPoints: each ].
+	wallPoints := OrderedCollection newFrom: wallPoints.
+
+	"Set top and bottom values"
+	top := 9999.
+	bottom := 0.
+	wallPoints do: [ :each |
+		top := top min: each y.
+		bottom := bottom max: each y ].
+
+	"Add spring for image"
+	wallPoints addLast: 500 @ 0.
+
 	"Generate grid"
 	grid := AoCTextGrid fromPoints: wallPoints.
 	grid at: springPos putChar: $+.
 
-	^ self solvePartOne
+	^ {
+		  self solvePartOne.
+		  self solvePartTwo }
+]
+
+{ #category : #solving }
+AoC2018Day17 >> runWaterLineFrom: aPoint [
+	"I return a collection of overflows that might be empty."
+
+	| leftFlow rightFlow overflows leftX rightX y |
+	leftFlow := self flowFrom: aPoint by: -1.
+	rightFlow := self flowFrom: aPoint by: 1.
+
+	overflows := OrderedCollection new.
+	leftFlow key = #falling ifTrue: [ overflows addLast: leftFlow value ].
+	rightFlow key = #falling ifTrue: [
+		overflows addLast: rightFlow value ].
+	overflows isEmpty ifFalse: [ ^ overflows ].
+
+	leftX := leftFlow value x.
+	rightX := rightFlow value x.
+	y := aPoint y.
+	leftX to: rightX do: [ :x | grid at: x @ y putChar: $~ ].
+	^ #(  )
 ]
 
 { #category : #showing }
@@ -153,13 +222,16 @@ AoC2018Day17 >> show [
 
 	frame := Form extent: 8 * (grid w @ grid h) depth: 32.
 	canvas := frame getCanvas.
-	translation := grid origin - (1 @ 1).
-	grid positionsDo: [ :pos | 
+	translation := grid translation.
+	grid positionsDo: [ :pos |
 		| worldPos canvasPos tile |
 		worldPos := pos + translation.
 		canvasPos := 8 * (pos - (1 @ 1)).
 		tile := forms at: (grid charAt: worldPos).
 		canvas drawImage: tile at: canvasPos ].
+
+	debug ifNotNil: [
+		(AoCCellMarker atPoint: debug - translation) drawOn: canvas ].
 
 	pane := ScrollPane new.
 	pane extent: 1024 @ 800.
@@ -170,25 +242,24 @@ AoC2018Day17 >> show [
 { #category : #solving }
 AoC2018Day17 >> solvePartOne [
 
-	| vertQ seen horQ |
-	vertQ := WaitfreeQueue new
-		         nextPut: springPos;
-		         yourself.
-	horQ := WaitfreeQueue new.
-	seen := Dictionary new
-		        at: springPos put: true;
-		        yourself.
-	[ vertQ isEmpty ] whileFalse: [ 
-		| node freeNeighbors |
-		node := vertQ nextOrNil.
-		freeNeighbors := self freeNeighborsDownAt: node.
-		freeNeighbors do: [ :neighbor | 
-			(neighbor y < 500 and: [ (seen includesKey: neighbor) not ]) ifTrue: [ 
-				seen at: neighbor put: true.
-				grid at: neighbor putChar: $|.
-				vertQ nextPut: neighbor ] ] ].
+	| dropResult result |
+	known := Set new.
+	dropResult := self fillWaterFrom: springPos.
+	result := 0.
+	grid worldPositionsDo: [ :each |
+		(('~|' includes: (grid charAt: each)) and: [ each y >= top ])
+			ifTrue: [ result := result + 1 ] ].
+	^ result
+]
 
-	^ grid
+{ #category : #solving }
+AoC2018Day17 >> solvePartTwo [
+
+	| result |
+	result := 0.
+	grid charsDo: [ :each |
+		('~' includes: each) ifTrue: [ result := result + 1 ] ].
+	^ result
 ]
 
 { #category : #running }

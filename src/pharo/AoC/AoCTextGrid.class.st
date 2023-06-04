@@ -10,7 +10,8 @@ Class {
 		'dict',
 		'w',
 		'h',
-		'origin'
+		'origin',
+		'margin'
 	],
 	#category : #'AoC-Base'
 }
@@ -31,14 +32,15 @@ AoCTextGrid class >> fromLines: lines [
 AoCTextGrid class >> fromPoints: somePoints [
 
 	| w h result xs ys origin margin |
-	margin := 1.
+	margin := 1 @ 1.
 	xs := somePoints collect: [ :each | each x ].
 	ys := somePoints collect: [ :each | each y ].
-	w := 1 + xs max - xs min + (margin * 2).
-	h := 1 + ys max - ys min + (margin * 2).
-	origin := xs min @ ys min - (margin @ margin).
-	result := self new w: w h: h origin: origin.
-	somePoints do: [ :aPoint | result at: aPoint x @ aPoint y putChar: $# ].
+	w := 1 + xs max - xs min + (margin x * 2).
+	h := 1 + ys max - ys min + (margin y * 2).
+	origin := xs min @ ys min - margin.
+	result := self new w: w h: h origin: origin margin: margin.
+	somePoints do: [ :aPoint |
+		result at: aPoint x @ aPoint y putChar: $# ].
 	^ result
 ]
 
@@ -68,6 +70,12 @@ AoCTextGrid >> at: aPoint putChar: aChar [
 AoCTextGrid >> charAt: aPoint [
 
 	^ dict at: aPoint ifAbsent: $.
+]
+
+{ #category : #enumerating }
+AoCTextGrid >> charsDo: aBlock [
+
+	dict valuesDo: aBlock
 ]
 
 { #category : #modifying }
@@ -139,6 +147,12 @@ AoCTextGrid >> positionsDo: aBlock [
 	1 to: h do: [ :i | 1 to: w do: [ :j | aBlock value: j @ i ] ]
 ]
 
+{ #category : #enumerating }
+AoCTextGrid >> translation [
+
+	^ origin - margin
+]
+
 { #category : #accessing }
 AoCTextGrid >> w [
 
@@ -148,13 +162,27 @@ AoCTextGrid >> w [
 { #category : #initialization }
 AoCTextGrid >> w: wNumber h: hNumber [
 
-	self w: wNumber h: hNumber origin: 1 @ 1
+	self
+		w: wNumber
+		h: hNumber
+		origin: 1 @ 1
+		margin: 0 @ 0
 ]
 
 { #category : #initialization }
-AoCTextGrid >> w: wNumber h: hNumber origin: aPoint [
+AoCTextGrid >> w: wNumber h: hNumber origin: originPoint margin: marginPoint [
 
 	w := wNumber.
 	h := hNumber.
-	origin := aPoint
+	origin := originPoint.
+	margin := marginPoint.
+]
+
+{ #category : #enumerating }
+AoCTextGrid >> worldPositionsDo: aBlock [
+
+	| translation |
+	translation := self translation.
+	1 to: h do: [ :i |
+	1 to: w do: [ :j | aBlock value: j @ i + translation ] ]
 ]
