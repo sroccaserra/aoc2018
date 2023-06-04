@@ -17,6 +17,12 @@ AoCVisualBase class >> ! filename [
 	^ result
 ]
 
+{ #category : #testing }
+AoCVisualBase class >> isAbstract [
+
+	^ self == AoCVisualBase
+]
+
 { #category : #showing }
 AoCVisualBase >> show [
 

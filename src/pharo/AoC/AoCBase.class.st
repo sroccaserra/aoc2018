@@ -13,6 +13,12 @@ AoCBase class >> * filename [
 	^ self new run: filename
 ]
 
+{ #category : #testing }
+AoCBase class >> isAbstract [
+
+	^ self == AoCBase
+]
+
 { #category : #running }
 AoCBase >> loadLines: filename [
 

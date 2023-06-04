@@ -86,6 +86,12 @@ AoCTextGrid >> clearNonWallCells [
 ]
 
 { #category : #accessing }
+AoCTextGrid >> eightNeighborsAt: aPoint [
+
+	^ aPoint eightNeighbors collect: [ :n | self charAt: n ]
+]
+
+{ #category : #accessing }
 AoCTextGrid >> findChar: aChar [
 
 	| result |
