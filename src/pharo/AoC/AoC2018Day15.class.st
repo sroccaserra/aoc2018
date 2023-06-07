@@ -61,19 +61,20 @@ AoC2018Day15 >> freeNeighborsAt: aPoint [
 { #category : #showing }
 AoC2018Day15 >> graphics [
 
-	^ Dictionary newFrom: { 
-			  (#wall
-			   ->
-			   '[gfx]0808555555555666666d56ddddd25d22222255555555666d5666ddd256dd22225d22[/gfx]').
-			  (#ground
-			   ->
-			   '[gfx]08081111111111111111111111111111111111111511111111111115111111111111[/gfx]').
-			  (#elf
-			   ->
-			   '[gfx]0808118811111188811111aff11111aff111f78787f1118881111181811114414411[/gfx]').
-			  (#goblin
-			   ->
-			   '[gfx]0808111111111b111b1111bbb111b11b11b11bbbbb1111bbb1111b111b111b111b11[/gfx]') }
+	^ {
+		  (#wall
+		   ->
+		   '[gfx]0808555555555666666d56ddddd25d22222255555555666d5666ddd256dd22225d22[/gfx]').
+		  (#ground
+		   ->
+		   '[gfx]08081111111111111111111111111111111111111511111111111115111111111111[/gfx]').
+		  (#elf
+		   ->
+		   '[gfx]0808118811111188811111aff11111aff111f78787f1118881111181811114414411[/gfx]').
+		  (#goblin
+		   ->
+		   '[gfx]0808111111111b111b1111bbb111b11b11b11bbbbb1111bbb1111b111b111b111b11[/gfx]') }
+		  asDictionary
 ]
 
 { #category : #initialization }

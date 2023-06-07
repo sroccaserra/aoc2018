@@ -28,17 +28,43 @@ AoCGraphics class >> bitRowsToForm: bitRows [
 { #category : #'class initialization' }
 AoCGraphics class >> initialize [
 
-	c64Palette := Dictionary new.
-	#( '000000' 'FFFFFF' '880000' 'AAFFEE' 'CC44CC' '00CC55' '0000AA'
-	   'EEEE77' 'DD8855' '664400' 'FF7777' '333333' '777777' 'AAFF66'
-	   '0088FF' 'BBBBBB' ) doWithIndex: [ :hexString :n | 
-		c64Palette at: n - 1 put: (Color fromHexString: hexString) ].
+	c64Palette := {
+		              (0 -> '000000').
+		              (1 -> 'FFFFFF').
+		              (2 -> '880000').
+		              (3 -> 'AAFFEE').
+		              (4 -> 'CC44CC').
+		              (5 -> '00CC55').
+		              (6 -> '0000AA').
+		              (7 -> 'EEEE77').
+		              (8 -> 'DD8855').
+		              (9 -> '664400').
+		              (10 -> 'FF7777').
+		              (11 -> '333333').
+		              (12 -> '777777').
+		              (13 -> 'AAFF66').
+		              (14 -> '0088FF').
+		              (15 -> 'BBBBBB') } asDictionary collect: [ :str |
+		              Color fromHexString: str ].
 
-	pico8Palette := Dictionary new.
-	#( '000000' '1D2B53' '7E2553' '008751' 'AB5236' '5F574F' 'C2C3C7'
-	   'FFF1E8' 'FF004D' 'FFA300' 'FFEC27' '00E436' '29ADFF' '83769C'
-	   'FF77A8' 'FFCCAA' ) doWithIndex: [ :hexString :n | 
-		pico8Palette at: n - 1 put: (Color fromHexString: hexString) ]
+	pico8Palette := {
+		                (0 -> '000000').
+		                (1 -> '1D2B53').
+		                (2 -> '7E2553').
+		                (3 -> '008751').
+		                (4 -> 'AB5236').
+		                (5 -> '5F574F').
+		                (6 -> 'C2C3C7').
+		                (7 -> 'FFF1E8').
+		                (8 -> 'FF004D').
+		                (9 -> 'FFA300').
+		                (10 -> 'FFEC27').
+		                (11 -> '00E436').
+		                (12 -> '29ADFF').
+		                (13 -> '83769C').
+		                (14 -> 'FF77A8').
+		                (15 -> 'FFCCAA') } asDictionary collect: [ :str |
+		                Color fromHexString: str ]
 ]
 
 { #category : #displaying }

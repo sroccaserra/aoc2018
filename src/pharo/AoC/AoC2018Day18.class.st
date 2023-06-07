@@ -61,11 +61,11 @@ AoC2018Day18 >> run: filename [
 AoC2018Day18 >> show [
 
 	| forms frame canvas |
-	forms := (Dictionary newFrom: {
-			          ($. -> self class groundGraphics).
-			          ($# -> self class treesGraphics).
-			          ($| -> self class lumberyardGraphics) }) collect: [ :gfx |
-		         AoCGraphics pico8StringToForm: gfx ].
+	forms := {
+		         ($. -> self class groundGraphics).
+		         ($# -> self class treesGraphics).
+		         ($| -> self class lumberyardGraphics) } asDictionary
+		         collect: [ :gfx | AoCGraphics pico8StringToForm: gfx ].
 
 	frame := Form extent: 8 * (grid w @ grid h) depth: 32.
 	canvas := frame getCanvas.

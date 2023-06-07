@@ -212,13 +212,13 @@ AoC2018Day17 >> runWaterLineFrom: aPoint [
 AoC2018Day17 >> show [
 
 	| forms frame canvas translation pane |
-	forms := Dictionary newFrom: { 
-			         ($. -> (AoCGraphics pico8StringToForm: self class groundGraphics)).
-			         ($# -> (AoCGraphics pico8StringToForm: self class wallGraphics)).
-			         ($+ -> (AoCGraphics pico8StringToForm: self class springGraphics)).
-			         ($~ -> (AoCGraphics pico8StringToForm: self class waterGraphics)).
-			         ($|
-			          -> (AoCGraphics pico8StringToForm: self class waterPassedGraphics)) }.
+	forms := {
+		         ($. -> self class groundGraphics).
+		         ($# -> self class wallGraphics).
+		         ($+ -> self class springGraphics).
+		         ($~ -> self class waterGraphics).
+		         ($| -> self class waterPassedGraphics) } asDictionary
+		         collect: [ :str | AoCGraphics pico8StringToForm: str ].
 
 	frame := Form extent: 8 * (grid w @ grid h) depth: 32.
 	canvas := frame getCanvas.
