@@ -6,29 +6,29 @@ Class {
 	#name : #AoC2018Day16,
 	#superclass : #AoCBase,
 	#instVars : [
-		'numberOpCodes',
-		'program'
+		'program',
+		'numberToMnemonicMap'
 	],
 	#category : #'AoC-2018'
 }
 
 { #category : #running }
-AoC2018Day16 >> findNumberOpCodes: matches [
+AoC2018Day16 >> findMnemonics: matches [
 
-	| found |
-	found := Dictionary new.
-	[ found keys size = matches keys size ] whileFalse: [ 
+	| result |
+	result := Dictionary new.
+	[ result keys size = matches keys size ] whileFalse: [
 		| justFound |
 		justFound := OrderedCollection new.
-		matches associationsDo: [ :each | 
-			each value size = 1 ifTrue: [ 
-				| opNumber |
-				opNumber := each value keys first.
-				justFound addLast: opNumber.
-				found at: opNumber put: each key ] ].
-		justFound do: [ :n | 
+		matches associationsDo: [ :each |
+			each value size = 1 ifTrue: [
+				| numericalOpcode |
+				numericalOpcode := each value keys first.
+				justFound addLast: numericalOpcode.
+				result at: numericalOpcode put: each key ] ].
+		justFound do: [ :n |
 			matches valuesDo: [ :each | each removeKey: n ifAbsent: [ nil ] ] ] ].
-	^ found
+	^ result
 ]
 
 { #category : #parsing }
@@ -94,14 +94,18 @@ AoC2018Day16 new run: 'Developer/github/aoc2018/src/16.txt'
 { #category : #running }
 AoC2018Day16 >> runProgram [
 
-	| state |
+	| state instructions |
 	state := AoCState new.
-	program do: [ :each | 
-		| instruction |
-		instruction := AoCInstruction fromFourNumbers: each.
-		instruction implementation:
-			(AoCInstruction ops at: (numberOpCodes at: each first)).
-		instruction executeOn: state ].
+	instructions := program collect: [ :each |
+		                | mnemonic |
+		                mnemonic := numberToMnemonicMap at: each first.
+		                (AoCInstruction fromFourNumbers: each)
+			                mnemonic: mnemonic;
+			                implementation:
+				                (AoCInstruction implementations at: mnemonic);
+			                yourself ].
+	instructions do: [ :each | each executeOn: state ].
+
 	^ state
 ]
 
@@ -116,11 +120,11 @@ AoC2018Day16 >> solvePartTwo: samples [
 
 	| matches |
 	matches := Dictionary new.
-	AoCInstruction ops keysDo: [ :opcode | matches at: opcode put: Dictionary new ].
+	AoCInstruction implementations keysDo: [ :opcode | matches at: opcode put: Dictionary new ].
 	samples do: [ :aSample | 
-		AoCInstruction ops associationsDo: [ :each | 
+		AoCInstruction implementations associationsDo: [ :each | 
 			(aSample matches: each value) ifTrue: [ 
-				(matches at: each key) at: aSample opNumber put: true ] ] ].
-	numberOpCodes := self findNumberOpCodes: matches.
+				(matches at: each key) at: aSample numericalOpcode put: true ] ] ].
+	numberToMnemonicMap := self findMnemonics: matches.
 	^ self runProgram at: 0
 ]

@@ -22,11 +22,6 @@ AoCState class >> fromFourNumbers: fourNumbers [
 		  yourself
 ]
 
-{ #category : #initialization }
-AoCState >> asStringOrText [ 
-^ 'toto'
-]
-
 { #category : #accessing }
 AoCState >> at: aNumber [
 
@@ -42,12 +37,11 @@ AoCState >> at: register put: value [
 { #category : #initialization }
 AoCState >> initialize [
 
-	registers := Dictionary new
-		             at: 0 put: 0;
-		             at: 1 put: 0;
-		             at: 2 put: 0;
-		             at: 3 put: 0;
-		             yourself
+	registers := {
+		             (0 -> 0).
+		             (1 -> 0).
+		             (2 -> 0).
+		             (3 -> 0) } asDictionary
 ]
 
 { #category : #printing }

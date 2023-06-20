@@ -27,7 +27,7 @@ AoCSample >> before: fourNumbers [
 { #category : #counting }
 AoCSample >> countMatching [
 
-	^ AoCInstruction ops values count: [ :implementation | 
+	^ AoCInstruction implementations values count: [ :implementation | 
 		  self matches: implementation ]
 ]
 
@@ -49,7 +49,7 @@ AoCSample >> matches: anImplementation [
 ]
 
 { #category : #accessing }
-AoCSample >> opNumber [
+AoCSample >> numericalOpcode [
 
-	^ instruction opNumber
+	^ instruction numericalOpcode
 ]
