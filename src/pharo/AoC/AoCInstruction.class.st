@@ -34,78 +34,95 @@ AoCInstruction class >> implementations [
 		   state
 			   at: inst c put: (state at: inst a) + (state at: inst b);
 			   yourself ]).
+		  "(add register) stores into register C the result of adding register A and register B."
 		  (#addi -> [ :inst :state |
 		   state
 			   at: inst c put: (state at: inst a) + inst b;
 			   yourself ]).
+		  "(add immediate) stores into register C the result of adding register A and value B."
 		  (#mulr -> [ :inst :state |
 		   state
 			   at: inst c put: (state at: inst a) * (state at: inst b);
 			   yourself ]).
+		  "(multiply register) stores into register C the result of"
 		  (#muli -> [ :inst :state |
 		   state
 			   at: inst c put: (state at: inst a) * inst b;
 			   yourself ]).
+		  "(multiply immediate) stores into register C the result of multiplying register A and value B."
 		  (#banr -> [ :inst :state |
 		   state
 			   at: inst c put: ((state at: inst a) bitAnd: (state at: inst b));
 			   yourself ]).
+		  "(bitwise AND register) stores into register C the result of the bitwise AND of register A and register B."
 		  (#bani -> [ :inst :state |
 		   state
 			   at: inst c put: ((state at: inst a) bitAnd: inst b);
 			   yourself ]).
+		  "(bitwise AND immediate) stores into register C the result of the bitwise AND of register A and value B."
 		  (#borr -> [ :inst :state |
 		   state
 			   at: inst c put: ((state at: inst a) bitOr: (state at: inst b));
 			   yourself ]).
+		  "(bitwise OR register) stores into register C the result of the bitwise OR of register A and register B."
 		  (#bori -> [ :inst :state |
 		   state
 			   at: inst c put: ((state at: inst a) bitOr: inst b);
 			   yourself ]).
+		  "(bitwise OR immediate) stores into register C the result of the bitwise OR of register A and value B."
 		  (#setr -> [ :inst :state |
 		   state
 			   at: inst c put: (state at: inst a);
 			   yourself ]).
+		  "(set register) copies the contents of register A into register C. (Input B is ignored.)"
 		  (#seti -> [ :inst :state |
 		   state
 			   at: inst c put: inst a;
 			   yourself ]).
+		  "(set immediate) stores value A into register C. (Input B is ignored.)"
 		  (#gtir -> [ :inst :state |
 		   state
 			   at: inst c put: {
 					   (inst a bytesCompare: (state at: inst b)).
 					   0 } max;
 			   yourself ]).
+		  "(greater-than immediate/register) sets register C to 1 if value A is greater than register B. Otherwise, register C is set to 0."
 		  (#gtri -> [ :inst :state |
 		   state
 			   at: inst c put: {
 					   ((state at: inst a) bytesCompare: inst b).
 					   0 } max;
 			   yourself ]).
+		  "(greater-than register/immediate) sets register C to 1 if register A is greater than value B. Otherwise, register C is set to 0."
 		  (#gtrr -> [ :inst :state |
 		   state
 			   at: inst c put: {
 					   ((state at: inst a) bytesCompare: (state at: inst b)).
 					   0 } max;
 			   yourself ]).
+		  "(greater-than register/register) sets register C to 1 if register A is greater than register B. Otherwise, register C is set to 0."
 		  (#eqir -> [ :inst :state |
 		   state
 			   at: inst c put: (inst a = (state at: inst b)
 					    ifTrue: [ 1 ]
 					    ifFalse: [ 0 ]);
 			   yourself ]).
+		  "(equal immediate/register) sets register C to 1 if value A is equal to register B. Otherwise, register C is set to 0."
 		  (#eqri -> [ :inst :state |
 		   state
 			   at: inst c put: ((state at: inst a) = inst b
 					    ifTrue: [ 1 ]
 					    ifFalse: [ 0 ]);
 			   yourself ]).
+		  "(equal register/immediate) sets register C to 1 if register A is equal to value B. Otherwise, register C is set to 0."
 		  (#eqrr -> [ :inst :state |
 		   state
 			   at: inst c put: ((state at: inst a) = (state at: inst b)
 					    ifTrue: [ 1 ]
 					    ifFalse: [ 0 ]);
-			   yourself ]) } asDictionary
+			   yourself ])
+		  "(equal register/register) sets register C to 1 if register A is equal to register B. Otherwise, register C is set to 0." }
+		  asDictionary
 ]
 
 { #category : #accessing }
