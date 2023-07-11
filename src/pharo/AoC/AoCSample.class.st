@@ -41,7 +41,7 @@ AoCSample >> instruction: anInstruction [
 AoCSample >> matches: anImplementation [
 
 	| state |
-	state := AoCState fromFourNumbers: before.
+	state := AoCState fromNumbers: before.
 	instruction
 		implementation: anImplementation;
 		executeOn: state.

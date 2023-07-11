@@ -11,15 +11,12 @@ Class {
 }
 
 { #category : #'instance creation' }
-AoCState class >> fromFourNumbers: fourNumbers [
+AoCState class >> fromNumbers: numbers [
 
-	[ fourNumbers size = 4 ] assert.
-	^ self new
-		  at: 0 put: fourNumbers first;
-		  at: 1 put: fourNumbers second;
-		  at: 2 put: fourNumbers third;
-		  at: 3 put: fourNumbers fourth;
-		  yourself
+	| result |
+	result := self new.
+	numbers doWithIndex: [ :each :i | result at: i - 1 put: each ].
+	^ result
 ]
 
 { #category : #accessing }
@@ -37,11 +34,7 @@ AoCState >> at: register put: value [
 { #category : #initialization }
 AoCState >> initialize [
 
-	registers := {
-		             (0 -> 0).
-		             (1 -> 0).
-		             (2 -> 0).
-		             (3 -> 0) } asDictionary
+	registers := Dictionary new
 ]
 
 { #category : #printing }

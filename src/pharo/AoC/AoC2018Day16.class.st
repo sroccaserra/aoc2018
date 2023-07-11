@@ -95,7 +95,7 @@ AoC2018Day16 new run: 'Developer/github/aoc2018/src/16.txt'
 AoC2018Day16 >> runProgram [
 
 	| state instructions |
-	state := AoCState new.
+	state := AoCState fromNumbers: #(0 0 0 0).
 	instructions := program collect: [ :each |
 		                | mnemonic |
 		                mnemonic := numberToMnemonicMap at: each first.
