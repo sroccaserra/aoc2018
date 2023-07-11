@@ -34,7 +34,7 @@ AoCState >> at: register put: value [
 { #category : #initialization }
 AoCState >> initialize [
 
-	registers := Dictionary new
+	registers := OrderedDictionary new
 ]
 
 { #category : #printing }
