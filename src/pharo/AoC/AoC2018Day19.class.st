@@ -4,6 +4,10 @@ no comment
 Class {
 	#name : #AoC2018Day19,
 	#superclass : #AoCBase,
+	#instVars : [
+		'ipReg',
+		'program'
+	],
 	#category : #'AoC-2018'
 }
 
@@ -26,23 +30,23 @@ AoC2018Day19 >> parseLine: aString [
 { #category : #running }
 AoC2018Day19 >> run: filename [
 
-	| lines program ipReg |
+	| lines |
 	lines := self loadLines: filename.
 	ipReg := (lines at: 1) last asInteger - $0 asInteger.
 	program := lines allButFirst collect: [ :line | self parseLine: line ].
-	^ self run: program withIpReg: ipReg startingFrom: #( 0 0 0 0 0 0 ).
-
+	^ self solvePartOne
 ]
 
 { #category : #running }
-AoC2018Day19 >> run: aProgram withIpReg: ipReg startingFrom: stateNumbers [
+AoC2018Day19 >> solvePartOne [
 
 	| state |
-	state := AoCState fromNumbers: stateNumbers .
-	[ 0 <= (state at: ipReg) and: [ (state at: ipReg) < aProgram size ] ]
+	state := AoCState fromNumbers: #( 0 0 0 0 0 0 ).
+	[ 0 <= (state at: ipReg) and: [ (state at: ipReg) < program size ] ]
 		whileTrue: [
-			| instruction |
-			instruction := aProgram at: (state at: ipReg) + 1.
+			| instruction ip |
+			ip := state at: ipReg.
+			instruction := program at: ip + 1.
 			instruction executeOn: state.
 			state at: ipReg put: (state at: ipReg) + 1 ].
 	^ state at: 0
