@@ -120,12 +120,7 @@ AoC2018Day19 >> solvePartOne [
 
 	state := AoCState fromNumbers: #( 0 0 0 0 0 0 ).
 	[ 0 <= (state at: ipReg) and: [ (state at: ipReg) < program size ] ]
-		whileTrue: [
-			| instruction ip |
-			ip := state at: ipReg.
-			instruction := program at: ip + 1.
-			instruction executeOn: state.
-			state at: ipReg put: (state at: ipReg) + 1 ].
+		whileTrue: [ self step ].
 	^ state at: 0
 ]
 
