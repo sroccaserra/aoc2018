@@ -21,8 +21,7 @@ AoC2018Day19 >> debugPartTwo [
 	view on: #mouseUp send: #value to: [
 		self step.
 		Clipboard clipboardText: state asString.
-		self show ].
-	^ state at: 0
+		self show ]
 ]
 
 { #category : #running }
