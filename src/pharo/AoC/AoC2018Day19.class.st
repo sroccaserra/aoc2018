@@ -25,6 +25,34 @@ AoC2018Day19 >> debugPartTwo [
 	^ state at: 0
 ]
 
+{ #category : #running }
+AoC2018Day19 >> fastPartOne [
+
+	| target sum j |
+	sum := 0.
+	target := 888.
+	1 to: target do: [ :i |
+		j := 1.
+		[ i * j <= target ] whileTrue: [
+			i * j = target ifTrue: [ sum := sum + i ].
+			j := j + 1 ] ].
+	^ sum
+]
+
+{ #category : #running }
+AoC2018Day19 >> fastPartTwo [
+
+	| target sum j |
+	sum := 0.
+	target := 10551288.
+	1 to: target do: [ :i |
+		j := 1.
+		[ i * j <= target ] whileTrue: [
+			i * j = target ifTrue: [ sum := sum + i ].
+			j := j + 1 ] ].
+	^ sum
+]
+
 { #category : #parsing }
 AoC2018Day19 >> parseLine: aString [
 
@@ -63,8 +91,8 @@ AoC2018Day19 >> run: filename [
 	ipReg := (lines at: 1) last asInteger - $0 asInteger.
 	program := lines allButFirst collect: [ :line | self parseLine: line ].
 	^ {
-		  self solvePartOne.
-		  self solvePartTwo }
+		  self fastPartOne.
+		  self fastPartTwo }
 ]
 
 { #category : #showing }
@@ -99,23 +127,6 @@ AoC2018Day19 >> solvePartOne [
 			instruction executeOn: state.
 			state at: ipReg put: (state at: ipReg) + 1 ].
 	^ state at: 0
-]
-
-{ #category : #running }
-AoC2018Day19 >> solvePartTwo [
-
-	| target sum i j |
-	sum := 0.
-	target := 10551288.
-	"target := 888."
-	i := 1.
-	[ i <= target ] whileTrue: [
-		j := 1.
-		[ i * j <= target ] whileTrue: [
-			i * j = target ifTrue: [ sum := sum + i ].
-			j := j + 1 ].
-		i := i + 1 ].
-	^ sum
 ]
 
 { #category : #running }
