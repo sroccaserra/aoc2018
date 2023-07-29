@@ -59,7 +59,7 @@ AoC2018Day19 >> parseLine: aString [
 	| parts mnemonic args |
 	parts := aString substrings.
 	mnemonic := parts first asSymbol.
-	args := parts allButFirst collect: [ :each | each asInteger ].
+	args := parts allButFirst collect: #asInteger.
 	^ AoCInstruction new
 		  mnemonic: mnemonic;
 		  implementation: (AoCInstruction implementations at: mnemonic);
