@@ -195,7 +195,11 @@ AoCInstruction >> numericalOpcode: aNumber [
 { #category : #printing }
 AoCInstruction >> printOn: aStream [
 
-	self class printOn: aStream.
-	' -> ' printOn: aStream.
-	mnemonic printOn: aStream.
+	| strings |
+	strings := { mnemonic asString } asOrderedCollection.
+	strings addAll: ({
+			 a.
+			 b.
+			 c } collect: [ :each | each asString padLeftTo: 3 ]).
+	(Character space join: strings) printOn: aStream
 ]

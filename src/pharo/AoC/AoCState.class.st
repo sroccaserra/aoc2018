@@ -40,9 +40,9 @@ AoCState >> initialize [
 { #category : #printing }
 AoCState >> printOn: aStream [
 
-	self class printOn: aStream.
-	' -> ' printOn: aStream.
-	registers values printOn: aStream
+	(Character tab join:
+		 (registers values collect: [ :each | each asString ])) printOn:
+		aStream
 ]
 
 { #category : #accessing }
