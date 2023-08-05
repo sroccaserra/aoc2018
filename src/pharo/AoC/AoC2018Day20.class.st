@@ -19,6 +19,27 @@ Class {
 }
 
 { #category : #running }
+AoC2018Day20 >> computeDistances: adjacencyLists [
+
+	| distances queue |
+	distances := Dictionary new.
+	distances at: 0 @ 0 put: 0.
+	queue := SharedQueue new.
+	queue nextPut: 0 @ 0.
+	[ queue isEmpty ] whileFalse: [
+		| pos neighbors d |
+		pos := queue next.
+		d := distances at: pos.
+		neighbors := (adjacencyLists at: pos) reject: [ :n |
+			             distances includesKey: n ].
+		neighbors do: [ :n |
+			distances at: n put: d + 1.
+			queue nextPut: n ] ].
+
+	^ distances
+]
+
+{ #category : #running }
 AoC2018Day20 >> parseEdges: line [
 	"^ENWWW(NEEE|SSE(EE|N))$"
 
@@ -73,33 +94,32 @@ AoC2018Day20 >> parseEdges: line [
 { #category : #running }
 AoC2018Day20 >> run: filename [
 
-	| lines edges |
+	| lines edges adjacencyLists distances |
 	lines := self loadLines: filename.
 	edges := self parseEdges: lines first.
-	^ self solvePartOne: edges
+
+	adjacencyLists := Dictionary new.
+	edges do: [ :rect |
+		(adjacencyLists at: rect origin ifAbsentPut: Set new) add:
+			rect corner.
+		(adjacencyLists at: rect corner ifAbsentPut: Set new) add:
+			rect origin ].
+
+	distances := self computeDistances: adjacencyLists.
+
+	^ {
+		  (self solvePartOne: distances).
+		  (self solvePartTwo: distances) }
 ]
 
 { #category : #running }
-AoC2018Day20 >> solvePartOne: edges [
-
-	| map distances queue |
-	map := Dictionary new.
-	edges do: [ :rect |
-		(map at: rect origin ifAbsentPut: Set new) add: rect corner.
-		(map at: rect corner ifAbsentPut: Set new) add: rect origin ].
-
-	distances := Dictionary new.
-	distances at: 0 @ 0 put: 0.
-	queue := SharedQueue new.
-	queue nextPut: 0 @ 0.
-	[ queue isEmpty ] whileFalse: [
-		| pos neighbors d |
-		pos := queue next.
-		d := distances at: pos.
-		neighbors := (map at: pos) reject: [ :n | distances includesKey: n ].
-		neighbors do: [ :n |
-			distances at: n put: d + 1.
-			queue nextPut: n ] ].
+AoC2018Day20 >> solvePartOne: distances [
 
 	^ distances values max
+]
+
+{ #category : #running }
+AoC2018Day20 >> solvePartTwo: distances [
+
+	^ (distances values select: [ :d | d >= 1000 ]) size
 ]
