@@ -195,26 +195,52 @@ AoCInstruction class >> named: aString [
 AoCInstruction class >> shortDescs [
 
 	^ {
-		  (#addr -> '@c <- @a + @b').
-		  (#addi -> '@c <- @a + b').
-		  (#mulr -> '@c <- @a * @b').
-		  (#muli -> '@c <- @a * b').
+		  (#addr -> '@a + @b -> @c').
+		  (#addi -> '@a + b -> @c').
+		  (#mulr -> '@a * @b -> @c').
+		  (#muli -> '@a * b -> @c').
 
-		  (#banr -> '@c <- @a & @b').
-		  (#bani -> '@c <- @a & b').
-		  (#borr -> '@c <- @a | @b').
-		  (#bori -> '@c <- @a | b').
+		  (#banr -> '@a & @b -> @c').
+		  (#bani -> '@a & b -> @c').
+		  (#borr -> '@a | @b -> @c').
+		  (#bori -> '@a | b -> @c').
 
-		  (#setr -> '@c <- @a').
-		  (#seti -> '@c <- a').
+		  (#setr -> '@a -> @c').
+		  (#seti -> 'a -> @c').
 
-		  (#gtir -> '@c <- (a > @b) ? 1 : 0').
-		  (#gtri -> '@c <- (@a > b) ? 1 : 0').
-		  (#gtrr -> '@c <- (@a > @b) ? 1 : 0').
+		  (#gtir -> '(a > @b) ? 1 : 0 -> @c').
+		  (#gtri -> '(@a > b) ? 1 : 0 -> @c').
+		  (#gtrr -> '(@a > @b) ? 1 : 0 -> @c').
 
-		  (#eqir -> '@c <- (a == @b) ? 1 : 0').
-		  (#eqri -> '@c <- (@a == b) ? 1 : 0').
-		  (#eqrr -> '@c <- (@a == @b) ? 1 : 0') } asDictionary
+		  (#eqir -> '(a == @b) ? 1 : 0 -> @c').
+		  (#eqri -> '(@a == b) ? 1 : 0 -> @c').
+		  (#eqrr -> '(@a == @b) ? 1 : 0 -> @c') } asDictionary
+]
+
+{ #category : #accessing }
+AoCInstruction class >> shortDescsFormat [
+
+	^ {
+		  (#addr -> '@{1} + @{2} -> @{3}').
+		  (#addi -> '@{1} + {2} -> @{3}').
+		  (#mulr -> '@{1} * @{2} -> @{3}').
+		  (#muli -> '@{1} * {2} -> @{3}').
+
+		  (#banr -> '@{1} & @{2} -> @{3}').
+		  (#bani -> '@{1} & {2} -> @{3}').
+		  (#borr -> '@{1} | @{2} -> @{3}').
+		  (#bori -> '@{1} | {2} -> @{3}').
+
+		  (#setr -> '@{1} -> @{3}').
+		  (#seti -> '{1} -> @{3}').
+
+		  (#gtir -> '({1} > @{2}) ? 1 : 0 -> @{3}').
+		  (#gtri -> '(@{1} > {2}) ? 1 : 0 -> @{3}').
+		  (#gtrr -> '(@{1} > @{2}) ? 1 : 0 -> @{3}').
+
+		  (#eqir -> '({1} == @{2}) ? 1 : 0 -> @{3}').
+		  (#eqri -> '(@{1} == {2}) ? 1 : 0 -> @{3}').
+		  (#eqrr -> '(@{1} == @{2}) ? 1 : 0 -> @{3}') } asDictionary
 ]
 
 { #category : #accessing }
@@ -294,6 +320,9 @@ AoCInstruction >> printOn: aStream [
 			 b.
 			 c } collect: [ :each | each asString padLeftTo: 3 ]).
 	strings add: ' #'.
-	strings add: (self class shortDescs at: mnemonic).
+	strings add: ((self class shortDescsFormat at: mnemonic) format: {
+				 a.
+				 b.
+				 c }).
 	(Character space join: strings) printOn: aStream
 ]
