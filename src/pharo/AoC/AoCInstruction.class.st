@@ -15,6 +15,60 @@ Class {
 	#category : #'AoC-2018'
 }
 
+{ #category : #accessing }
+AoCInstruction class >> descriptions [
+
+	^ {
+		  (#addr
+		   ->
+		   '(add register) stores into register C the result of adding register A and register B.').
+		  (#addi
+		   ->
+		   '(add immediate) stores into register C the result of adding register A and value B.').
+		  (#mulr
+		   -> '(multiply register) stores into register C the result of').
+		  (#muli
+		   ->
+		   '(multiply immediate) stores into register C the result of multiplying register A and value B.').
+		  (#banr
+		   ->
+		   '(bitwise AND register) stores into register C the result of the bitwise AND of register A and register B.').
+		  (#bani
+		   ->
+		   '(bitwise AND immediate) stores into register C the result of the bitwise AND of register A and value B.').
+		  (#borr
+		   ->
+		   '(bitwise OR register) stores into register C the result of the bitwise OR of register A and register B.').
+		  (#bori
+		   ->
+		   '(bitwise OR immediate) stores into register C the result of the bitwise OR of register A and value B.').
+		  (#setr
+		   ->
+		   '(set register) copies the contents of register A into register C. (Input B is ignored.)').
+		  (#seti
+		   ->
+		   '(set immediate) stores value A into register C. (Input B is ignored.)').
+		  (#gtir
+		   ->
+		   '(greater-than immediate/register) sets register C to 1 if value A is greater than register B. Otherwise, register C is set to 0.').
+		  (#gtri
+		   ->
+		   '(greater-than register/immediate) sets register C to 1 if register A is greater than value B. Otherwise, register C is set to 0.').
+		  (#gtrr
+		   ->
+		   '(greater-than register/register) sets register C to 1 if register A is greater than register B. Otherwise, register C is set to 0.').
+		  (#eqir
+		   ->
+		   '(equal immediate/register) sets register C to 1 if value A is equal to register B. Otherwise, register C is set to 0.').
+		  (#eqri
+		   ->
+		   '(equal register/immediate) sets register C to 1 if register A is equal to value B. Otherwise, register C is set to 0.').
+		  (#eqrr
+		   ->
+		   '(equal register/register) sets register C to 1 if register A is equal to register B. Otherwise, register C is set to 0.') }
+		  asDictionary
+]
+
 { #category : #'instance creation' }
 AoCInstruction class >> fromFourNumbers: fourNumbers [
 
@@ -138,6 +192,32 @@ AoCInstruction class >> named: aString [
 ]
 
 { #category : #accessing }
+AoCInstruction class >> shortDescs [
+
+	^ {
+		  (#addr -> '@c <- @a + @b').
+		  (#addi -> '@c <- @a + b').
+		  (#mulr -> '@c <- @a * @b').
+		  (#muli -> '@c <- @a * b').
+
+		  (#banr -> '@c <- @a & @b').
+		  (#bani -> '@c <- @a & b').
+		  (#borr -> '@c <- @a | @b').
+		  (#bori -> '@c <- @a | b').
+
+		  (#setr -> '@c <- @a').
+		  (#seti -> '@c <- a').
+
+		  (#gtir -> '@c <- (a > @b) ? 1 : 0').
+		  (#gtri -> '@c <- (@a > b) ? 1 : 0').
+		  (#gtrr -> '@c <- (@a > @b) ? 1 : 0').
+
+		  (#eqir -> '@c <- (a == @b) ? 1 : 0').
+		  (#eqri -> '@c <- (@a == b) ? 1 : 0').
+		  (#eqrr -> '@c <- (@a == @b) ? 1 : 0') } asDictionary
+]
+
+{ #category : #accessing }
 AoCInstruction >> a [
 
 	^ a
@@ -213,5 +293,7 @@ AoCInstruction >> printOn: aStream [
 			 a.
 			 b.
 			 c } collect: [ :each | each asString padLeftTo: 3 ]).
+	strings add: ' #'.
+	strings add: (self class shortDescs at: mnemonic).
 	(Character space join: strings) printOn: aStream
 ]

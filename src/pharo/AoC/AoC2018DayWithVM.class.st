@@ -14,16 +14,10 @@ Class {
 	#category : #'AoC-2018'
 }
 
-{ #category : #testing }
-AoC2018DayWithVM class >> isAbstract [
-
-	^ self name = AoC2018DayWithVM
-]
-
 { #category : #running }
 AoC2018DayWithVM >> debug [
 
-	self assert: [ state isNotNil ].
+	[ state isNotNil ] assert.
 	self show.
 	view on: #mouseUp send: #value to: [
 		self step.
