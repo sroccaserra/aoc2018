@@ -3,13 +3,7 @@ no comment
 "
 Class {
 	#name : #AoC2018Day19,
-	#superclass : #AoCVisualBase,
-	#instVars : [
-		'ipReg',
-		'program',
-		'state',
-		'view'
-	],
+	#superclass : #AoC2018DayWithVM,
 	#category : #'AoC-2018'
 }
 
@@ -17,11 +11,7 @@ Class {
 AoC2018Day19 >> debugPartTwo [
 
 	state := AoCState fromNumbers: #( 1 0 0 0 0 0 ).
-	self show.
-	view on: #mouseUp send: #value to: [
-		self step.
-		Clipboard clipboardText: state asString.
-		self show ]
+	self debug
 ]
 
 { #category : #running }
@@ -52,22 +42,6 @@ AoC2018Day19 >> fastPartTwo [
 	^ sum
 ]
 
-{ #category : #parsing }
-AoC2018Day19 >> parseLine: aString [
-
-	| parts mnemonic args |
-	parts := aString substrings.
-	mnemonic := parts first asSymbol.
-	args := parts allButFirst collect: #asInteger.
-	^ AoCInstruction new
-		  mnemonic: mnemonic;
-		  implementation: (AoCInstruction implementations at: mnemonic);
-		  a: args first;
-		  b: args second;
-		  c: args third;
-		  yourself
-]
-
 { #category : #running }
 AoC2018Day19 >> rewrittenPartTwo [
 
@@ -85,50 +59,16 @@ AoC2018Day19 >> rewrittenPartTwo [
 { #category : #running }
 AoC2018Day19 >> run: filename [
 
-	| lines |
-	lines := self loadLines: filename.
-	ipReg := (lines at: 1) last asInteger - $0 asInteger.
-	program := lines allButFirst collect: [ :line | self parseLine: line ].
+	self initializeFromInput: filename.
 	^ {
 		  self fastPartOne.
 		  self fastPartTwo }
-]
-
-{ #category : #showing }
-AoC2018Day19 >> show [
-
-	| programLines |
-	view ifNil: [
-		view := SpRubScrolledTextMorph new.
-		view extent: 200 @ 800.
-		view openInWindowLabeled: 'AoC2018Day19' ].
-
-	programLines := program collectWithIndex: [ :each :i |
-		                | prefix pc |
-		                pc := state at: ipReg.
-		                prefix := i - 1 = pc
-			                          ifTrue: [ '>' ]
-			                          ifFalse: [ (i - 1) asString ].
-		                prefix , Character tab asString , each asString ].
-	view setText:
-		(Character cr join: programLines , ' ' , { state asString })
 ]
 
 { #category : #running }
 AoC2018Day19 >> solvePartOne [
 
 	state := AoCState fromNumbers: #( 0 0 0 0 0 0 ).
-	[ 0 <= (state at: ipReg) and: [ (state at: ipReg) < program size ] ]
-		whileTrue: [ self step ].
+	[ self isHalted ] whileFalse: [ self step ].
 	^ state at: 0
-]
-
-{ #category : #running }
-AoC2018Day19 >> step [
-
-	| instruction ip |
-	ip := state at: ipReg.
-	instruction := program at: ip + 1.
-	instruction executeOn: state.
-	state at: ipReg put: (state at: ipReg) + 1
 ]

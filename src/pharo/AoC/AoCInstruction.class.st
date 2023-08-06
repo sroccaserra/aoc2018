@@ -126,6 +126,18 @@ AoCInstruction class >> implementations [
 ]
 
 { #category : #accessing }
+AoCInstruction class >> named: aString [
+
+	| impl mnemonic |
+	mnemonic := aString asSymbol.
+	impl := self implementations at: mnemonic.
+	^ self new
+		  mnemonic: mnemonic;
+		  implementation: impl;
+		  yourself
+]
+
+{ #category : #accessing }
 AoCInstruction >> a [
 
 	^ a
