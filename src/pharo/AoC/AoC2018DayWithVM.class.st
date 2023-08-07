@@ -55,6 +55,18 @@ AoC2018DayWithVM >> parseLine: aString [
 		  yourself
 ]
 
+{ #category : #running }
+AoC2018DayWithVM >> pc [
+
+	^ state at: ipReg
+]
+
+{ #category : #running }
+AoC2018DayWithVM >> pc: aNumber [
+
+	state at: ipReg put: aNumber
+]
+
 { #category : #showing }
 AoC2018DayWithVM >> show [
 
@@ -80,10 +92,9 @@ AoC2018DayWithVM >> show [
 { #category : #running }
 AoC2018DayWithVM >> step [
 
-	| instruction ip |
-	ip := state at: ipReg.
-	instruction := program at: ip + 1.
+	| instruction |
+	instruction := program at: self pc + 1.
 	instruction executeOn: state.
-	state at: ipReg put: (state at: ipReg) + 1.
+	self pc: self pc + 1.
 	instructionCount := instructionCount + 1
 ]
