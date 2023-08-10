@@ -14,6 +14,12 @@ Class {
 	#category : #'AoC-2018'
 }
 
+{ #category : #testing }
+AoC2018DayWithVM class >> isAbstract [
+
+	^ self == AoC2018DayWithVM
+]
+
 { #category : #running }
 AoC2018DayWithVM >> debug [
 

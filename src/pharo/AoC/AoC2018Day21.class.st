@@ -126,25 +126,22 @@ AoC2018Day21 >> values [
 	reg_3 := reg_3 % (2 ** 24).
 	reg_3 := reg_3 * 65899.
 	reg_3 := reg_3 % (2 ** 24).
-	(reg_1 < 256 and: [ reg_3 = reg_0 ]) ifTrue: [ ^ reg_3 ].
-	"    goto D"
-	"else:"
+	reg_1 < 256 ifTrue: [
+		reg_3 = reg_0
+			ifTrue: [ ^ reg_3 ]
+			ifFalse: [ "goto A" ] ].
 	reg_5 := 0.
 
 	"C"
 	reg_4 := reg_5 + 1.
 	reg_4 := reg_4 * 256.
+	"if reg_4 > reg_1:"
+	"	reg_1 := reg_5"
+	"	goto B"
+	"else:"
+	"	reg_5 := reg_5 + 1"
+	"	goto C"
 
-	"
-20  # (@4 > @1) ? 1 : 0 -> @4   # if @4 > @1:
-21  # @4 + @2 -> @2             #   goto 23 => goto 26: set @1 to @5 and goto B
-22  # @2 + 1 -> @2              # else: goto 24 => increment @5 and goto C
-23  # 25 -> @2                  . goto 26
-24  # @5 + 1 -> @5              . @5 += 1
-25  # 17 -> @2                  # goto C:
-26  # @5 -> @1                  . @1 = @5
-27  # 7 -> @2                   # goto B
-"
 	result addAll: {
 			(#_1 -> reg_1).
 			reg_3.
