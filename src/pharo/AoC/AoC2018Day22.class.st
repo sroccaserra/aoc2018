@@ -54,6 +54,16 @@ AoC2018Day22 >> computeTypes [
 			types at: pos put: type ] ]
 ]
 
+{ #category : #initialization }
+AoC2018Day22 >> initialize [
+
+	super initialize.
+	toolsForType := {
+		                (0 -> #( #climbingGear #torch )).
+		                (1 -> #( #climbingGear #neither )).
+		                (2 -> #( #torch #neither )) } asDictionary
+]
+
 { #category : #running }
 AoC2018Day22 >> isPositionAt: aPoint compatibleWith: aTool [
 
