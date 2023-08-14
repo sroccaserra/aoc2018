@@ -30,11 +30,11 @@ AoCNanobot >> distanceToOrigin [
 ]
 
 { #category : #testing }
-AoCNanobot >> includes: aG3DCoordinates [
+AoCNanobot >> isInRange: aG3DCoordinates [
 
 	| vec |
 	vec := center - aG3DCoordinates.
-	^ vec x abs + vec y abs + vec z abs < radius
+	^ vec x abs + vec y abs + vec z abs <= radius
 ]
 
 { #category : #'distance functions' }

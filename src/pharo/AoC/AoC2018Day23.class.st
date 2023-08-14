@@ -28,9 +28,9 @@ AoC2018Day23 >> findCliqueFor: aNanobot [
 { #category : #running }
 AoC2018Day23 >> parseLine: aString [
 
-	| parts numbers center |
-	parts := aString substrings: '=,<> '.
-	numbers := #( 2 3 4 6 ) collect: [ :i | (parts at: i) asInteger ].
+	| numbers center |
+	numbers := ((RxMatcher forString: '[-0-9]+') matchesIn: aString)
+		           collect: #asInteger.
 	center := G3DCoordinates
 		          x: numbers first
 		          y: numbers second
@@ -57,8 +57,9 @@ AoC2018Day23 >> run: filename [
 AoC2018Day23 >> solvePartOne [
 
 	| mainBot |
-	mainBot := (nanobots sort: [ :e1 :e2 | e1 radius > e2 radius ]) first.
-	^ nanobots count: [ :bot | mainBot includes: bot center ]
+	mainBot := (nanobots sort: [ :bot1 :bot2 | bot1 radius > bot2 radius ])
+		           first.
+	^ nanobots count: [ :other | mainBot isInRange: other center ]
 ]
 
 { #category : #running }
