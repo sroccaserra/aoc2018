@@ -37,6 +37,23 @@ Voir aussi :
   iterations become the same? Look for cycles also. If there is a constant
   delta or a cycle, this becomes an easy calculation.
 
+### Smalltalk
+
+- The Collection `#select:`, `#collect:`, ... methods, and in general methods
+  that accept a one-argument block also accept a method symbol for argument.
+  Simply because the `Symbol` class has a `#value:` method.  Nice.
+- `OrderedCollection` makes for a good queue implementation. It has fast
+  `#removeFirst` and `#add:` implementations. This is good for Breadth First
+  Search like algorithms. Note: this is probably why there is no basic `Queue`
+  class in the standard lib? There are a `SharedQueue` and `WaitfreeQueue`
+  classes in my image though.
+- There is a `Heap` class with `#sortBlock:` and `#removeFirst` methods. This
+  is nice for Dijkstra-like algorithms.
+- There are `Point`, `G2DCoordinates` and `G3DCoordinates` classes that can be
+  used as `Dictionary` keys.
+- This makes Smalltalk a pretty good language out of the box for the Advent of
+  Code.
+
 ### Haskell
 
 - On peut construire un graph avec une liste d'arrêtes avec `buildG` ou `graphFromEdges`
