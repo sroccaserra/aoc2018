@@ -37,7 +37,7 @@ AoCNanobot >> isInRange: aG3DCoordinates [
 	^ vec x abs + vec y abs + vec z abs <= radius
 ]
 
-{ #category : #'distance functions' }
+{ #category : #testing }
 AoCNanobot >> overlapsWith: otherNanobot [
 
 	| vec |
@@ -55,7 +55,7 @@ AoCNanobot >> printOn: aStream [
 	aStream nextPutAll: '}'
 ]
 
-{ #category : #'distance functions' }
+{ #category : #accessing }
 AoCNanobot >> radius [
 
 ^ radius
@@ -65,16 +65,4 @@ AoCNanobot >> radius [
 AoCNanobot >> radius: aNumber [
 
 	radius := aNumber
-]
-
-{ #category : #accessing }
-AoCNanobot >> vertices [
-
-	^ {
-		  (center + (G3DCoordinates x: radius y: 0 z: 0)).
-		  (center + (G3DCoordinates x: radius negated y: 0 z: 0)).
-		  (center + (G3DCoordinates x: 0 y: radius z: 0)).
-		  (center + (G3DCoordinates x: 0 y: radius negated z: 0)).
-		  (center + (G3DCoordinates x: 0 y: 0 z: radius)).
-		  (center + (G3DCoordinates x: 0 y: 0 z: radius negated)) }
 ]

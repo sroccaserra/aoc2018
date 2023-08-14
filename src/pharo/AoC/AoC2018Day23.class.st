@@ -67,10 +67,10 @@ AoC2018Day23 >> solvePartTwo [
 
 	| nbOfCollisions clique |
 	nbOfCollisions := (nanobots collect: [ :each |
-		                   | n |
-		                   n := nanobots count: [ :other |
-			                        each overlapsWith: other ].
-		                   each -> n ]) asDictionary.
+		                   each
+		                   ->
+		                   (nanobots count: [ :other |
+			                    each overlapsWith: other ]) ]) asDictionary.
 
 	nanobots sort: [ :e1 :e2 |
 		(nbOfCollisions at: e1) > (nbOfCollisions at: e2) ].
