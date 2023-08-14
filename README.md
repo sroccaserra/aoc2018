@@ -17,7 +17,8 @@ $ stack runhaskell src/01.hs - < src/01.txt  # Allows to use stdin
 
 ## Learnings
 
-Voir aussi :
+See also:
+
 - <https://github.com/sroccaserra/aoc2015#learnings>
 - <https://github.com/sroccaserra/aoc2019#learnings>
 - <https://github.com/sroccaserra/aoc2020#learnings>
@@ -53,6 +54,12 @@ Voir aussi :
   used as `Dictionary` keys.
 - This makes Smalltalk a pretty good language out of the box for the Advent of
   Code.
+- When commiting changes to files in the Git repository (that are probably not
+  Smalltalk code) outside the image, the view of the Git repository becomes
+  dirty in the image. To fix that, open the Git repository in the image (right
+  click and "Open repository"), this shows the commits in the repository, and
+  by right-clicking them you can "adopt" them. This should fix the repository
+  view in the image.
 
 ### Haskell
 
