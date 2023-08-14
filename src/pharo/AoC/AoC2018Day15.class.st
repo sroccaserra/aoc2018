@@ -22,24 +22,23 @@ AoC2018Day15 >> findPathFromUnit: aUnit toClosestTarget: targets [
 
 	| unitPosition q distances node d neighbors parents |
 	unitPosition := aUnit position.
-	q := WaitfreeQueue new
-		     nextPut: unitPosition;
-		     yourself.
+	q := OrderedCollection new.
+	q add: unitPosition.
 	distances := Dictionary new
 		             at: unitPosition put: 0;
 		             yourself.
 	parents := Dictionary new.
-	[ q isEmpty ] whileFalse: [ 
-		node := q nextOrNil.
+	[ q isEmpty ] whileFalse: [
+		node := q removeFirst.
 		d := distances at: node.
-		neighbors := (self freeNeighborsAt: node) reject: [ :n | 
+		neighbors := (self freeNeighborsAt: node) reject: [ :n |
 			             distances includesKey: n ].
-		neighbors do: [ :n | 
+		neighbors do: [ :n |
 			parents at: n put: node.
 			distances at: n put: d + 1.
 			(targets includes: n)
 				ifTrue: [ ^ self unwindPathFromNode: n withParents: parents ]
-				ifFalse: [ q nextPut: n ] ] ].
+				ifFalse: [ q add: n ] ] ].
 	^ LinkedList new
 ]
 

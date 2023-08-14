@@ -24,17 +24,17 @@ AoC2018Day20 >> computeDistances: adjacencyLists [
 	| distances queue |
 	distances := Dictionary new.
 	distances at: 0 @ 0 put: 0.
-	queue := SharedQueue new.
-	queue nextPut: 0 @ 0.
+	queue := OrderedCollection new.
+	queue add: 0 @ 0.
 	[ queue isEmpty ] whileFalse: [
 		| pos neighbors d |
-		pos := queue next.
+		pos := queue removeFirst.
 		d := distances at: pos.
 		neighbors := (adjacencyLists at: pos) reject: [ :n |
 			             distances includesKey: n ].
 		neighbors do: [ :n |
 			distances at: n put: d + 1.
-			queue nextPut: n ] ].
+			queue add: n ] ].
 
 	^ distances
 ]
