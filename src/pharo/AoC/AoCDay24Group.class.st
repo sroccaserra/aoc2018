@@ -6,12 +6,12 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'nbUnits',
+		'unitHitPoints',
 		'attackDamage',
 		'attackType',
 		'initiative',
 		'weaknesses',
-		'immunities',
-		'unitHitPoints'
+		'immunities'
 	],
 	#category : #'AoC-2018'
 }
@@ -19,6 +19,7 @@ Class {
 { #category : #testing }
 AoCDay24Group >> <= other [
 
+	self nbUnits isZero ifTrue: [ ^ false ].
 	^ self effectivePower = other effectivePower
 		  ifTrue: [ ^ self initiative > other initiative ]
 		  ifFalse: [ self effectivePower > other effectivePower ]
@@ -29,7 +30,7 @@ AoCDay24Group >> attack: other [
 
 	| damages |
 	damages := self damagesTo: other.
-	other suffer: damages
+	^ other suffer: damages
 ]
 
 { #category : #accessing }
@@ -42,6 +43,12 @@ AoCDay24Group >> attackDamage: aNumber [
 AoCDay24Group >> attackType: aString [
 
 	attackType := aString
+]
+
+{ #category : #accessing }
+AoCDay24Group >> boost: anInteger [
+
+	^ attackDamage := attackDamage + anInteger
 ]
 
 { #category : #accessing }
@@ -112,8 +119,10 @@ AoCDay24Group >> printOn: aStream [
 
 	aStream
 		nextPutAll: self className;
-		nextPutAll: ' nbUnits: '.
+		nextPutAll: ' nbu: '.
 	nbUnits printOn: aStream.
+	aStream nextPutAll: ', uhp: '.
+	unitHitPoints printOn: aStream.
 	aStream nextPutAll: ', ep: '.
 	self effectivePower printOn: aStream.
 	aStream nextPutAll: ', ad: '.
@@ -133,7 +142,8 @@ AoCDay24Group >> suffer: damages [
 
 	| nbUnitLost |
 	nbUnitLost := damages // unitHitPoints.
-	nbUnits := 0 max: nbUnits - nbUnitLost
+	nbUnits := 0 max: nbUnits - nbUnitLost.
+	^ nbUnitLost
 ]
 
 { #category : #accessing }

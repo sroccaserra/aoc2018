@@ -8,6 +8,13 @@ Class {
 }
 
 { #category : #running }
+AoC2018Day24 >> parseArmyConfigurations: twoCollectionsOfSpecLines [
+
+	^ twoCollectionsOfSpecLines collect: [ :spec |
+		  spec collect: [ :line | self parseLine: line ] ]
+]
+
+{ #category : #running }
 AoC2018Day24 >> parseAttackOn: aLine [
 
 	| matcher |
@@ -69,26 +76,16 @@ AoC2018Day24 >> parseXTo: prefix on: aLine [
 ]
 
 { #category : #running }
-AoC2018Day24 >> performAttacksIn: targetSelection [
-
-	targetSelection do: [ :e |
-		| attacker defender |
-		attacker := e key.
-		defender := e value.
-		attacker attack: defender ]
-]
-
-{ #category : #running }
 AoC2018Day24 >> run: filename [
 
-	| lines parts specs parseBlock |
+	| lines parts armyConfigurations |
 	lines := self loadLines: filename.
 	parts := lines splitOn: #( '' ).
-	specs := parts collect: #allButFirst.
-	parseBlock := [ :spec |
-	              spec asOrderedCollection collect: [ :line |
-		              self parseLine: line ] ].
-	^ self solvePartOne: (specs collect: parseBlock)
+	armyConfigurations := parts collect: [ :each |
+		         each allButFirst asOrderedCollection ].
+	^ {
+		  (self solvePartOne: (self parseArmyConfigurations: armyConfigurations)).
+		  (self solvePartTwo: armyConfigurations) }
 ]
 
 { #category : #running }
@@ -111,11 +108,12 @@ AoC2018Day24 >> selectAllTargetsFor: immuneSystemArmy opposing: infectionArmy [
 			           ifTrue: [ infectionTargets ]
 			           ifFalse: [ immuneSystemTargets ].
 		targets ifNotEmpty: [
-			| association |
-			association := attacker
-			               -> (self sortedTargets: targets for: attacker) first.
-			targets remove: association value.
-			result add: association ] ].
+			| association target |
+			target := (self sortedTargets: targets for: attacker) first.
+			(attacker damagesTo: target) > 0 ifTrue: [
+				association := attacker -> target.
+				targets remove: association value.
+				result add: association ] ] ].
 
 	^ result sorted: [ :a :b | a key initiative > b key initiative ]
 ]
@@ -123,21 +121,58 @@ AoC2018Day24 >> selectAllTargetsFor: immuneSystemArmy opposing: infectionArmy [
 { #category : #running }
 AoC2018Day24 >> solvePartOne: armies [
 
-	| targetSelection immuneSystemArmy infectionArmy |
+	| targetSelection immuneSystemArmy infectionArmy isDraw stillStanding |
 	immuneSystemArmy := armies first.
 	infectionArmy := armies second.
+	isDraw := false.
 
-	[ armies allSatisfy: #notEmpty ] whileTrue: [
+	[ isDraw not and: [ armies allSatisfy: #notEmpty ] ] whileTrue: [
+		| nbUnitsLost |
 		targetSelection := self
 			                   selectAllTargetsFor: immuneSystemArmy
 			                   opposing: infectionArmy.
+		nbUnitsLost := 0.
+		targetSelection do: [ :e1 |
+			| attacker defender |
+			attacker := e1 key.
+			defender := e1 value.
+			nbUnitsLost := nbUnitsLost + (attacker attack: defender).
 
-		self performAttacksIn: targetSelection.
-		immuneSystemArmy removeAllSuchThat: [ :e | e isDefeated ].
-		infectionArmy removeAllSuchThat: [ :e | e isDefeated ] ].
-	^ (armies select: #notEmpty) first
-		  inject: 0
-		  into: [ :acc :each | acc + each nbUnits ]
+			immuneSystemArmy removeAllSuchThat: #isDefeated.
+			infectionArmy removeAllSuchThat: #isDefeated.
+			stillStanding := armies select: #notEmpty.
+			stillStanding size = 1 ifTrue: [
+				^ stillStanding first
+					  inject: 0
+					  into: [ :acc :each | acc + each nbUnits ] ] ].
+
+		isDraw := nbUnitsLost = 0 ].
+
+	^ -1
+]
+
+{ #category : #running }
+AoC2018Day24 >> solvePartTwo: specs [
+
+	| isGood result low high |
+	low := 0.
+	high := 10000.
+	result := 0.
+	isGood := [ :armies |
+	          armies first notEmpty and: [ armies second isEmpty ] ].
+
+	[ high - low > 1 ] whileTrue: [
+		| mid armies nbUnitsLeft |
+		mid := low + high // 2.
+		armies := self parseArmyConfigurations: specs.
+		armies first do: [ :each | each boost: mid ].
+		nbUnitsLeft := self solvePartOne: armies.
+		(isGood value: armies)
+			ifTrue: [
+				high := mid.
+				result := nbUnitsLeft ]
+			ifFalse: [ low := mid ] ].
+	^ result
 ]
 
 { #category : #running }
