@@ -222,7 +222,7 @@ AoC2018Day15 >> startGame: elvesAttackPower [
 
 	elfStartPositions do: [ :pos | 
 		| unit |
-		unit := AoCUnit new
+		unit := AoCDay15Unit new
 			        position: pos;
 			        attackPower: elvesAttackPower;
 			        allies: elves;
@@ -232,7 +232,7 @@ AoC2018Day15 >> startGame: elvesAttackPower [
 
 	goblinStartPositions do: [ :pos | 
 		| unit |
-		unit := AoCUnit new
+		unit := AoCDay15Unit new
 			        position: pos;
 			        allies: goblins;
 			        enemies: elves;

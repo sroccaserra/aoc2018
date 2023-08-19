@@ -2,7 +2,7 @@
 I represent an elf or a goblin unit for the advent of code 2018 day 15 puzzle.
 "
 Class {
-	#name : #AoCUnit,
+	#name : #AoCDay15Unit,
 	#superclass : #Object,
 	#instVars : [
 		'position',
@@ -15,81 +15,81 @@ Class {
 }
 
 { #category : #accessing }
-AoCUnit >> allies [
+AoCDay15Unit >> allies [
 
 	^ allies
 ]
 
 { #category : #accessing }
-AoCUnit >> allies: anObject [
+AoCDay15Unit >> allies: anObject [
 
 	allies := anObject
 ]
 
 { #category : #action }
-AoCUnit >> attack: aUnit [
+AoCDay15Unit >> attack: aUnit [
 
 	aUnit losesHP: attackPower.
 ]
 
 { #category : #accessing }
-AoCUnit >> attackPower: anInteger [
+AoCDay15Unit >> attackPower: anInteger [
 
 	attackPower := anInteger
 ]
 
 { #category : #updating }
-AoCUnit >> die [
+AoCDay15Unit >> die [
 
 	self allies removeKey: position
 ]
 
 { #category : #accessing }
-AoCUnit >> enemies [
+AoCDay15Unit >> enemies [
 
 	^ enemies
 ]
 
 { #category : #accessing }
-AoCUnit >> enemies: aDictionary [
+AoCDay15Unit >> enemies: aDictionary [
 
 	enemies := aDictionary
 ]
 
 { #category : #accessing }
-AoCUnit >> hasWon [
+AoCDay15Unit >> hasWon [
 
 	^ enemies isEmpty
 ]
 
 { #category : #accessing }
-AoCUnit >> hitPoints [
+AoCDay15Unit >> hitPoints [
 
 	^ hitPoints
 ]
 
 { #category : #initialization }
-AoCUnit >> initialize [
+AoCDay15Unit >> initialize [
 
 	hitPoints := 200.
 	attackPower := 3
 ]
 
 { #category : #accessing }
-AoCUnit >> isAlive [
+AoCDay15Unit >> isAlive [
 
 	^ hitPoints > 0
 ]
 
 { #category : #updating }
-AoCUnit >> losesHP: anInteger [
+AoCDay15Unit >> losesHP: anInteger [
 
 	hitPoints := hitPoints - anInteger.
 	hitPoints <= 0 ifTrue: [ self die ]
 ]
 
 { #category : #updating }
-AoCUnit >> moveTo: aPoint [
+AoCDay15Unit >> moveTo: aPoint [
 
 	allies removeKey: position.
 	position := aPoint.
@@ -97,7 +97,7 @@ AoCUnit >> moveTo: aPoint [
 ]
 
 { #category : #accessing }
-AoCUnit >> pointsInRange [
+AoCDay15Unit >> pointsInRange [
 
 	^ Array
 		  with: position + (0 @ -1)
@@ -107,19 +107,19 @@ AoCUnit >> pointsInRange [
 ]
 
 { #category : #accessing }
-AoCUnit >> position [
+AoCDay15Unit >> position [
 
 	^ position
 ]
 
 { #category : #accessing }
-AoCUnit >> position: aPoint [
+AoCDay15Unit >> position: aPoint [
 
 	position := aPoint
 ]
 
 { #category : #accessing }
-AoCUnit >> targetInRange [
+AoCDay15Unit >> targetInRange [
 
 	| result minHP weakestTarget |
 	minHP := 999999.
