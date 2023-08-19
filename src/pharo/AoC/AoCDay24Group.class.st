@@ -5,13 +5,13 @@ Class {
 	#name : #AoCDay24Group,
 	#superclass : #Object,
 	#instVars : [
-		'units',
-		'target',
+		'nbUnits',
 		'attackDamage',
 		'attackType',
 		'initiative',
 		'weaknesses',
-		'immunities'
+		'immunities',
+		'unitHitPoints'
 	],
 	#category : #'AoC-2018'
 }
@@ -22,12 +22,6 @@ AoCDay24Group >> <= other [
 	^ self effectivePower = other effectivePower
 		  ifTrue: [ ^ self initiative > other initiative ]
 		  ifFalse: [ self effectivePower > other effectivePower ]
-]
-
-{ #category : #accessing }
-AoCDay24Group >> addUnit: anAoCDay24Unit [
-
-	units add: anAoCDay24Unit
 ]
 
 { #category : #accessing }
@@ -61,19 +55,13 @@ AoCDay24Group >> damagesTo: other [
 { #category : #accessing }
 AoCDay24Group >> effectivePower [
 
-	^ self nbUnits * attackDamage
+	^ nbUnits * attackDamage
 ]
 
 { #category : #accessing }
 AoCDay24Group >> immunities: strings [
 
 	immunities := strings
-]
-
-{ #category : #initialization }
-AoCDay24Group >> initialize [
-
-	units := OrderedCollection new
 ]
 
 { #category : #accessing }
@@ -91,7 +79,8 @@ AoCDay24Group >> initiative: aNumber [
 { #category : #testing }
 AoCDay24Group >> isDefeated [
 
-	^ units isEmpty
+	[ nbUnits >= 0 ] assert.
+	^ nbUnits = 0
 ]
 
 { #category : #testing }
@@ -109,7 +98,13 @@ AoCDay24Group >> isWeakTo: anAttackType [
 { #category : #accessing }
 AoCDay24Group >> nbUnits [
 
-	^ units size
+	^ nbUnits
+]
+
+{ #category : #accessing }
+AoCDay24Group >> nbUnits: anInteger [
+
+	^ nbUnits := anInteger
 ]
 
 { #category : #printing }
@@ -118,7 +113,7 @@ AoCDay24Group >> printOn: aStream [
 	aStream
 		nextPutAll: self className;
 		nextPutAll: ' nbUnits: '.
-	units size printOn: aStream.
+	nbUnits printOn: aStream.
 	aStream nextPutAll: ', ep: '.
 	self effectivePower printOn: aStream.
 	aStream nextPutAll: ', ad: '.
@@ -136,22 +131,15 @@ AoCDay24Group >> printOn: aStream [
 { #category : #accessing }
 AoCDay24Group >> suffer: damages [
 
-	| hitPoints nbUnitLost |
-	hitPoints := units first hitPoints.
-	nbUnitLost := damages // hitPoints.
-	units := units allButLast: nbUnitLost
+	| nbUnitLost |
+	nbUnitLost := damages // unitHitPoints.
+	nbUnits := 0 max: nbUnits - nbUnitLost
 ]
 
 { #category : #accessing }
-AoCDay24Group >> target [
+AoCDay24Group >> unitHitPoints: anInteger [
 
-	^ target
-]
-
-{ #category : #accessing }
-AoCDay24Group >> target: aGroup [
-
-	target := aGroup
+	^ unitHitPoints := anInteger
 ]
 
 { #category : #accessing }

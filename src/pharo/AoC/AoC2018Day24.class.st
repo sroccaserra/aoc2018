@@ -39,7 +39,7 @@ AoC2018Day24 >> parseInitiativeOn: aLine [
 { #category : #running }
 AoC2018Day24 >> parseLine: aLine [
 
-	| weaknesses immunities attack hitPoints initiative nbUnits result |
+	| weaknesses immunities attack hitPoints initiative nbUnits |
 	nbUnits := aLine asNumber.
 	hitPoints := self parseHitPointsOn: aLine.
 	attack := self parseAttackOn: aLine.
@@ -47,19 +47,15 @@ AoC2018Day24 >> parseLine: aLine [
 	weaknesses := self parseXTo: 'weak' on: aLine.
 	immunities := self parseXTo: 'immune' on: aLine.
 
-	result := AoCDay24Group new
-		          attackDamage: attack first;
-		          attackType: attack second;
-		          initiative: initiative;
-		          weaknesses: weaknesses;
-		          immunities: immunities;
-		          yourself.
-
-	nbUnits timesRepeat: [
-		result addUnit: (AoCDay24Unit new
-				 hitPoints: hitPoints;
-				 yourself) ].
-	^ result
+	^ AoCDay24Group new
+		  nbUnits: nbUnits;
+		  unitHitPoints: hitPoints;
+		  attackDamage: attack first;
+		  attackType: attack second;
+		  initiative: initiative;
+		  weaknesses: weaknesses;
+		  immunities: immunities;
+		  yourself
 ]
 
 { #category : #running }
