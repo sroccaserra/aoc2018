@@ -1,3 +1,9 @@
+Note: deprecated.
+
+See instead:
+
+- <https://github.com/sroccaserra/advent-of-code>
+
 ## Démarrer un nouveau projet
 
 ```
